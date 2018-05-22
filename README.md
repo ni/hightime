@@ -71,13 +71,13 @@ TypeError: unsupported operand type(s) for +: 'Highdatetime' and 'Highdatetime'
 0:00:00+3000027000002e-18
 ```
 
-See the [readthedocs page](http://<reponame>.readthedocs.io/en/latest/) for more detailed examples and documentation.
+See the [readthedocs page](http://hightime.readthedocs.io/en/latest/) for more detailed examples and documentation.
 
 License
 -------
 Hightime is licensed under an MIT-style license.
 
-See [LICENSE](https://github.com/ni/<reponame>/blob/master/LICENSE)
+See [LICENSE](https://github.com/ni/hightime/blob/master/LICENSE)
 for details about how hightime is licensed.
 
 Other incorporated projects may be licensed under different licenses. All
