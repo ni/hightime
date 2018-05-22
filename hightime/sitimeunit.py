@@ -2,6 +2,7 @@
 # package (eg. "pip install enum34")
 from enum import IntEnum
 
+
 class SITimeUnit(IntEnum):
     # prefixes from https://physics.nist.gov/cuu/Units/prefixes.html
     SECONDS = 0

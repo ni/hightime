@@ -1,5 +1,8 @@
-import sys
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta  # noqa: H301
+
+from . import util
+from .sitimeunit import SITimeUnit
+
 
 class Hightimedelta(object):
 
@@ -33,10 +36,10 @@ class Hightimedelta(object):
 
     @property
     def nanoseconds(self):
-        return util.getSubsecondComponent(self._frac_seconds,
-                                          self._frac_seconds_exponent,
-                                          SITimeUnit.NANOSECONDS,
-                                          SITimeUnit.MICROSECONDS)
+        return util.get_subsecond_component(self._frac_seconds,
+                                            self._frac_seconds_exponent,
+                                            SITimeUnit.NANOSECONDS,
+                                            SITimeUnit.MICROSECONDS)
 
     def __init__(self, days=0, seconds=0, microseconds=0,
                  milliseconds=0, minutes=0, hours=0, weeks=0,
@@ -46,15 +49,15 @@ class Hightimedelta(object):
         # frac_seconds simplifies the implementation and reduces usage errors.
         if (microseconds != 0) or (milliseconds != 0):
             if frac_seconds != 0:
-                raise TypeError("Cannot specify microseconds or " \
+                raise TypeError("Cannot specify microseconds or "
                                 "milliseconds with frac_seconds")
             if frac_seconds_exponent is not None:
-                raise TypeError("Cannot specify microseconds or " \
+                raise TypeError("Cannot specify microseconds or "
                                 "milliseconds with frac_seconds_exponent")
 
             # Set frac_second members based on microsecond or milliseconds,
             # normalize to microseconds
-            frac_seconds = (milliseconds * 10**3) + microseconds
+            frac_seconds = (milliseconds * 10 ** 3) + microseconds
             frac_seconds_exponent = SITimeUnit.MICROSECONDS
         else:
             # frac_seconds_exponent defaults to None to check if it was improperly
@@ -63,21 +66,21 @@ class Hightimedelta(object):
             # integer.
             if frac_seconds_exponent is None:
                 frac_seconds_exponent = SITimeUnit.NANOSECONDS
-            elif (not(isinstance(frac_seconds_exponent, long)) and \
-                  not(isinstance(frac_seconds_exponent, int))) or \
-                frac_seconds_exponent >= 0:
+            elif ((not (isinstance(frac_seconds_exponent, long)) and
+                   not (isinstance(frac_seconds_exponent, int))) or
+                  frac_seconds_exponent >= 0):
                 raise TypeError("frac_seconds_exponent must be a negative long/int",
                                 frac_seconds_exponent)
             # Set the microseconds arg for the timedelta ctor based on frac_second
-            microseconds = util.getSubsecondComponent(
+            microseconds = util.get_subsecond_component(
                 frac_seconds, frac_seconds_exponent,
                 SITimeUnit.MICROSECONDS, SITimeUnit.SECONDS)
 
         if frac_seconds != 0:
-#            if (not(isinstance(frac_second, long)) and \
-#                not(isinstance(frac_second, int))):
-#                raise TypeError("fractional second must be a long/int",
-#                                frac_second)
+            # if (not(isinstance(frac_second, long)) and \
+            #     not(isinstance(frac_second, int))):
+            #     raise TypeError("fractional second must be a long/int",
+            #                     frac_second)
             # Ensure fractional seconds <= 1 second
             total_frac_seconds = frac_seconds * (10 ** frac_seconds_exponent)
             if total_frac_seconds > 1:
@@ -135,12 +138,12 @@ class Hightimedelta(object):
                 return timedelta.__eq__(a, b)
         return False
 
-    def __add__(self,other):
+    def __add__(self, other):
         # Highdatetime already handles adding Hightimedelta objs
         if isinstance(other, Highdatetime):
             return other + self
         elif isinstance(other, datetime):
-            return Highdatetime.fromDatetime(other) + self
+            return Highdatetime.fromdatetime(other) + self
         elif isinstance(other, Hightimedelta) or isinstance(other, timedelta):
             # add values without sub-seconds, then deal with normalized
             # sub-seconds separately.
@@ -154,8 +157,8 @@ class Hightimedelta(object):
                                                                          other)
 
             result_frac_seconds = frac_seconds_self + frac_seconds_other
-            result_frac_seconds_as_seconds = result_frac_seconds * \
-                                             (10 ** result_frac_seconds_exponent)
+            result_frac_seconds_as_seconds = (result_frac_seconds *
+                                              (10 ** result_frac_seconds_exponent))
             # adjust whole seconds if necessary
             if result_frac_seconds_as_seconds >= 1:
                 result = timedelta.__add__(result, timedelta(seconds=1))
@@ -178,21 +181,21 @@ class Hightimedelta(object):
             whole_seconds_self = timedelta(seconds=int(self.total_seconds()))
             result = whole_seconds_self * other
             result_frac_seconds = self.frac_seconds * other
-            result_frac_seconds_as_seconds = result_frac_seconds * \
-                                             (10 ** self.frac_seconds_exponent)
+            result_frac_seconds_as_seconds = (result_frac_seconds *
+                                              (10 ** self.frac_seconds_exponent))
             num_extra_seconds = int(result_frac_seconds_as_seconds)
 
             # adjust whole seconds if necessary
             if num_extra_seconds >= 1:
                 result = timedelta.__add__(result,
                                            timedelta(seconds=num_extra_seconds))
-                result_frac_seconds -= (10 ** abs(self.frac_seconds_exponent))\
-                                       * num_extra_seconds
+                result_frac_seconds -= ((10 ** abs(self.frac_seconds_exponent)) *
+                                        num_extra_seconds)
             elif num_extra_seconds < 0:
                 result = timedelta.__sub__(result,
                                            timedelta(seconds=num_extra_seconds))
-                result_frac_seconds += (10 ** abs(self.frac_seconds_exponent))\
-                                       * num_extra_seconds
+                result_frac_seconds += ((10 ** abs(self.frac_seconds_exponent)) *
+                                        num_extra_seconds)
 
             return Hightimedelta(days=result.days,
                                  seconds=result.seconds,
@@ -200,18 +203,16 @@ class Hightimedelta(object):
                                  frac_seconds_exponent=self.frac_seconds_exponent)
 
         if isinstance(other, float):
-            return NotImplemented #FIXME
+            return NotImplemented  # FIXME
 
         return NotImplemented
 
     __rmul__ = __mul__
 
 
-# Import peer modules here to avoid circular import problems related to the
-# definition of the Hightimedelta class above.
-from . import util
-from .highdatetime import Highdatetime
-from .sitimeunit import SITimeUnit
+# Import highdatetime module here to avoid circular import problems related to
+# the definition of the Hightimedelta class above.
+from .highdatetime import Highdatetime  # noqa: E402
 
 if(util.isPython3Compat):
     long = int
