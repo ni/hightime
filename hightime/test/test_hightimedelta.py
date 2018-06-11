@@ -30,7 +30,7 @@ class HightimedeltaTestCase(unittest.TestCase):
         with self.assertRaises(ValueError):
             Hightimedelta(frac_seconds=11, frac_seconds_exponent=-1)
 
-    def test_addToDatetime(self):
+    def test_addTodatetime(self):
         dt = datetime.datetime(1,1,1)
         htd = Hightimedelta(frac_seconds=1,
                             frac_seconds_exponent=SITimeUnit.NANOSECONDS)
