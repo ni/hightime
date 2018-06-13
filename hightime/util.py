@@ -18,8 +18,8 @@ def normalize_frac_seconds(a, b):
         returns: (100, 12, -2)
     """
     # Lots of code to handle singular "second" as used in datetime and
-    # Highdatetime, and plural "seconds" as used in timedelta and
-    # Hightimedelta...
+    # DateTime, and plural "seconds" as used in timedelta and
+    # TimeDelta...
 
     if hasattr(a, "frac_second") and hasattr(a, "frac_second_exponent"):
         a_frac_seconds = a.frac_second

@@ -3,11 +3,11 @@ from . import util
 from .sitimeunit import SITimeUnit
 
 
-class Highdatetime(object):
+class DateTime(object):
 
     __slots__ = '_datetime', '_frac_second', '_frac_second_exponent'
 
-    # Highdatetime resolution is virtually infinite, None represents infinity?
+    # DateTime resolution is virtually infinite, None represents infinity?
     resolution = None
     min = datetime.min
     max = datetime.max
@@ -176,7 +176,7 @@ class Highdatetime(object):
 
     def __eq__(self, other):
         # FIXME: is isinstance() the right way to check this?
-        if isinstance(other, Highdatetime) or isinstance(other, datetime):
+        if isinstance(other, DateTime) or isinstance(other, datetime):
             # check sub-second value first since that is more likely different.
             (frac_second,
              other_frac_second,
@@ -194,7 +194,7 @@ class Highdatetime(object):
         return False
 
     def __add__(self, other):
-        if isinstance(other, Hightimedelta) or isinstance(other, timedelta):
+        if isinstance(other, TimeDelta) or isinstance(other, timedelta):
             # add values without sub-seconds, then deal with normalized
             # sub-seconds separately.
             # FIXME: this results in 2 ctor calls, make more efficient
@@ -219,27 +219,27 @@ class Highdatetime(object):
                                       result_frac_second)
 
             # FIXME: fold?
-            return Highdatetime(year=result.year,
-                                month=result.month,
-                                day=result.day,
-                                hour=result.hour,
-                                minute=result.minute,
-                                second=result.second,
-                                tzinfo=result.tzinfo,
-                                frac_second=result_frac_second,
-                                frac_second_exponent=result_frac_second_exponent)
+            return DateTime(year=result.year,
+                            month=result.month,
+                            day=result.day,
+                            hour=result.hour,
+                            minute=result.minute,
+                            second=result.second,
+                            tzinfo=result.tzinfo,
+                            frac_second=result_frac_second,
+                            frac_second_exponent=result_frac_second_exponent)
 
         return NotImplemented
 
     __radd__ = __add__
 
     def __sub__(self, other):
-        if isinstance(other, Highdatetime) or isinstance(other, datetime):
+        if isinstance(other, DateTime) or isinstance(other, datetime):
             return self.__subtract_highdatetime__(self, other)
         return NotImplemented
 
     def __rsub__(self, other):
-        if isinstance(other, Highdatetime) or isinstance(other, datetime):
+        if isinstance(other, DateTime) or isinstance(other, datetime):
             return self.__subtract_highdatetime__(other, self)
         return NotImplemented
 
@@ -251,7 +251,7 @@ class Highdatetime(object):
                 frac_second=None, frac_second_exponent=None,
                 **kwargs):
         """
-        Return a new Highdatetime with new values for the specified fields.
+        Return a new DateTime with new values for the specified fields.
         """
         # Same args as __new__, see note about "fold" in __new__
         if util.isPython36Compat:
@@ -283,11 +283,11 @@ class Highdatetime(object):
         if util.isPython36Compat:
             if fold is None:
                 fold = self.fold
-            return Highdatetime(year, month, day, hour, minute, second,
-                                microsecond, tzinfo, fold=fold)
+            return DateTime(year, month, day, hour, minute, second,
+                            microsecond, tzinfo, fold=fold)
         else:
-            return Highdatetime(year, month, day, hour, minute, second,
-                                microsecond, tzinfo)
+            return DateTime(year, month, day, hour, minute, second,
+                            microsecond, tzinfo)
 
     def weekday(self):
         return self._datetime.weekday()
@@ -348,37 +348,37 @@ class Highdatetime(object):
         assert isinstance(dt, datetime)
 
         if util.isPython36Compat:
-            return Highdatetime(dt.year, dt.month, dt.day,
-                                dt.hour, dt.minute, dt.second,
-                                dt.microsecond, dt.tzinfo, fold=dt.fold)
+            return DateTime(dt.year, dt.month, dt.day,
+                            dt.hour, dt.minute, dt.second,
+                            dt.microsecond, dt.tzinfo, fold=dt.fold)
         else:
-            return Highdatetime(dt.year, dt.month, dt.day,
-                                dt.hour, dt.minute, dt.second,
-                                dt.microsecond, dt.tzinfo)
+            return DateTime(dt.year, dt.month, dt.day,
+                            dt.hour, dt.minute, dt.second,
+                            dt.microsecond, dt.tzinfo)
 
     @staticmethod
     def fromtimestamp(t, tz=None):
-        return Highdatetime.fromdatetime(datetime.fromtimestamp(t, tz))
+        return DateTime.fromdatetime(datetime.fromtimestamp(t, tz))
 
     @staticmethod
     def utcfromtimestamp(t):
-        return Highdatetime.fromdatetime(datetime.utcfromtimestamp(t))
+        return DateTime.fromdatetime(datetime.utcfromtimestamp(t))
 
     @staticmethod
     def today():
-        return Highdatetime.fromdatetime(datetime.today())
+        return DateTime.fromdatetime(datetime.today())
 
     @staticmethod
     def now(tz=None):
-        return Highdatetime.fromdatetime(datetime.now(tz))
+        return DateTime.fromdatetime(datetime.now(tz))
 
     @staticmethod
     def utcnow():
-        return Highdatetime.fromdatetime(datetime.utcnow())
+        return DateTime.fromdatetime(datetime.utcnow())
 
     @staticmethod
     def fromordinal(ordinal):
-        return Highdatetime.fromdatetime(datetime.fromordinal(ordinal))
+        return DateTime.fromdatetime(datetime.fromordinal(ordinal))
 
     @staticmethod
     def combine(date, time, tzinfo=None):
@@ -387,18 +387,18 @@ class Highdatetime(object):
         elif not util.isPython36Compat:
             raise TypeError  # FIXME, support this
         if util.isPython36Compat:
-            return Highdatetime.fromdatetime(datetime.combine(date, time, tzinfo))
+            return DateTime.fromdatetime(datetime.combine(date, time, tzinfo))
         else:
-            return Highdatetime.fromdatetime(datetime.combine(date, time))
+            return DateTime.fromdatetime(datetime.combine(date, time))
 
     @staticmethod
     def strptime(date_string, format):
-        return Highdatetime.fromdatetime(datetime.strptime(date_string, format))
+        return DateTime.fromdatetime(datetime.strptime(date_string, format))
 
     @staticmethod
     def __subtract_highdatetime__(a, b):
-        assert (isinstance(a, datetime) or isinstance(a, Highdatetime)) and \
-               (isinstance(b, datetime) or isinstance(b, Highdatetime))
+        assert (isinstance(a, datetime) or isinstance(a, DateTime)) and \
+               (isinstance(b, datetime) or isinstance(b, DateTime))
 
         # Subtract values without sub-seconds, then deal with normalized
         # sub-seconds separately.
@@ -427,15 +427,15 @@ class Highdatetime(object):
             result_frac_seconds = ((10 ** abs(result_frac_seconds_exponent)) +
                                    result_frac_seconds)
 
-        return Hightimedelta(days=result.days,
-                             seconds=result.seconds,
-                             frac_seconds=result_frac_seconds,
-                             frac_seconds_exponent=result_frac_seconds_exponent)
+        return TimeDelta(days=result.days,
+                         seconds=result.seconds,
+                         frac_seconds=result_frac_seconds,
+                         frac_seconds_exponent=result_frac_seconds_exponent)
 
 
 # Import hightimedelta module here to avoid circular import problems related to
-# the definition of the Highdatetime class above.
-from .hightimedelta import Hightimedelta  # noqa: E402
+# the definition of the DateTime class above.
+from .hightimedelta import TimeDelta  # noqa: E402
 
 if(util.isPython3Compat):
     long = int
