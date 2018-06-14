@@ -127,12 +127,12 @@ Examples:
 
 >>> delta_t = Hightime( 22.23 ) - Hightime( 0.1 )
 >>> delta_t
-<hightimedelta.Hightimedelta object at 0x7f682e322cd0>
+<hightimedelta.TimeDelta object at 0x7f682e322cd0>
 >>> print delta_t
 22s 130ms
 
 """
 
-from .highdatetime import Highdatetime  # noqa: F401
-from .hightimedelta import Hightimedelta  # noqa: F401
+from .highdatetime import DateTime  # noqa: F401
+from .hightimedelta import TimeDelta  # noqa: F401
 from .sitimeunit import SITimeUnit  # noqa: F401

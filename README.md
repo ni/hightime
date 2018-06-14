@@ -3,7 +3,7 @@ Hightime
 
 Overview
 --------
-Hightime allows for virtually infinite sub-second precision by providing API-compatible replacements for datetime.datetime (hightime.Highdatetime) and datetime.timedelta (hightime.Hightimedelta).
+Hightime allows for virtually infinite sub-second precision by providing API-compatible replacements for datetime.datetime (hightime.DateTime) and datetime.timedelta (hightime.TimeDelta).
 
 Installation
 ------------
@@ -24,14 +24,14 @@ Examples
 --------
 
 ```python
->>> from hightime import Highdatetime, Hightimedelta, SITimeUnit
+>>> from hightime import DateTime, TimeDelta, SITimeUnit
 
->>> now = Highdatetime.now()
+>>> now = DateTime.now()
 
 >>> print(now)
 2018-05-06 19:53:14.170736
 
->>> increment = Hightimedelta(frac_seconds=135, frac_seconds_exponent=-13)
+>>> increment = TimeDelta(frac_seconds=135, frac_seconds_exponent=-13)
 
 >>> print(increment)
 0:00:00+135e-13
@@ -49,7 +49,7 @@ Examples
 >>> print(later + now)
 Traceback (most recent call last):
   File "<stdin>", line 1, in <module>
-TypeError: unsupported operand type(s) for +: 'Highdatetime' and 'Highdatetime'
+TypeError: unsupported operand type(s) for +: 'DateTime' and 'DateTime'
 
 >>> print(later - now)
 0:00:00+270e-13
@@ -62,7 +62,7 @@ TypeError: unsupported operand type(s) for +: 'Highdatetime' and 'Highdatetime'
 >>> print(later)
 2018-05-06 19:53:14+1707390000270e-13
 
->>> later += Hightimedelta(frac_seconds=2, frac_seconds_exponent=SITimeUnit.ATTOSECONDS)
+>>> later += TimeDelta(frac_seconds=2, frac_seconds_exponent=SITimeUnit.ATTOSECONDS)
 
 >>> print(later)
 2018-05-06 19:53:14+170739000027000002e-18
