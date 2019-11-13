@@ -1,5 +1,17 @@
 import os
+from setuptools.command.test import test
 from setuptools import setup
+
+
+class PyTest(test):
+    def finalize_options(self):
+        test.finalize_options(self)
+        self.test_args = []
+        self.test_suite = True
+
+    def run_tests(self):
+        import pytest
+        pytest.main(self.test_args)
 
 
 pypi_name = 'hightime'
@@ -30,6 +42,10 @@ setup(
     license='MIT',
     include_package_data=True,
     packages=[pypi_name],
+    install_requires=[
+        'enum34;python_version<"3.4"',
+    ],    
+    tests_require=['pytest'],
     classifiers=[
         "Development Status :: 2 - Pre-Alpha",
         "Intended Audience :: Developers",
@@ -48,5 +64,6 @@ setup(
         "Programming Language :: Python :: Implementation :: CPython",
         "Programming Language :: Python :: Implementation :: PyPy",
     ],
+    cmdclass={'test': PyTest},
     package_data={pypi_name: ['VERSION']},
 )
