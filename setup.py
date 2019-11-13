@@ -5,6 +5,11 @@ from setuptools import setup
 pypi_name = 'hightime'
 
 
+def read_contents(file_to_read):
+    with open(file_to_read, 'r') as f:
+        return f.read()
+
+
 def get_version():
     script_dir = os.path.dirname(os.path.realpath(__file__))
     version_path = os.path.join(script_dir, pypi_name, 'VERSION')
