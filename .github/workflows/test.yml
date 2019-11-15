@@ -11,9 +11,9 @@ jobs:
 
     runs-on: ubuntu-latest
     strategy:
-      max-parallel: 4
+      max-parallel: 5
       matrix:
-        python-version: [2.7, 3.5, 3.6, 3.7]
+        python-version: [2.7, 3.4, 3.5, 3.6, 3.7]
 
     steps:
     - uses: actions/checkout@v1
@@ -23,7 +23,7 @@ jobs:
         python-version: ${{ matrix.python-version }}
     - name: Install PIP
       run: python -m pip install --upgrade pip
-    - name: Install enum34 on Python
+    - name: Install enum34 on Python 2.7
       if: matrix.python-version == '2.7'
       run: pip install enum34
     - name: Lint with flake8
