@@ -1,5 +1,3 @@
-# enum is not part of pre-Python 3.4 or pypy but can be added by installing the enum34
-# package (eg. "pip install enum34")
 from enum import IntEnum
 
 
