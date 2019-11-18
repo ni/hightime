@@ -44,7 +44,7 @@ setup(
     packages=[pypi_name],
     install_requires=[
         'enum34;python_version<"3.4"',
-    ],    
+    ],
     tests_require=['pytest'],
     classifiers=[
         "Development Status :: 2 - Pre-Alpha",
