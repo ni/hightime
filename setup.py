@@ -42,9 +42,7 @@ setup(
     license='MIT',
     include_package_data=True,
     packages=[pypi_name],
-    install_requires=[
-        'enum34;python_version<"3.4"',
-    ],
+    install_requires=[],
     tests_require=['pytest'],
     classifiers=[
         "Development Status :: 2 - Pre-Alpha",
@@ -54,8 +52,6 @@ setup(
         "License :: OSI Approved :: MIT License",
         "Operating System :: Microsoft :: Windows",
         "Operating System :: POSIX",
-        "Programming Language :: Python :: 2",
-        "Programming Language :: Python :: 2.7",
         "Programming Language :: Python :: 3",
         "Programming Language :: Python :: 3.4",
         "Programming Language :: Python :: 3.5",
