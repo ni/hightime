@@ -33,6 +33,7 @@ setup(
     zip_safe=True,
     version=get_version(),
     description='Hightime Python API',
+    long_description=read_contents('README.md'),
     author='National Instruments',
     author_email="opensource@ni.com",
     url="https://github.com/ni/hightime",
