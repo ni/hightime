@@ -4,9 +4,13 @@ on:
   push:
     branches:
       - master
+  release:
+    types:
+      - published
 
 jobs:
   build-and-publish:
+    if: github.repository == 'ni/hightime'
     runs-on: ubuntu-latest
 
     steps:
@@ -32,7 +36,7 @@ jobs:
         continue-on-error: true
 
       - name: Publish distribution to PyPI
-        if: startsWith(github.event.ref, 'refs/tags')
+        if: startsWith(github.event.ref, 'refs/tags/v')
         uses: pypa/gh-action-pypi-publish@master
         with:
           user: __token__
