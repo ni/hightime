@@ -91,7 +91,10 @@ class TimeDeltaTestCase(unittest.TestCase):
         htd = TimeDelta(1,
                             frac_seconds=1,
                             frac_seconds_exponent=SITimeUnit.NANOSECONDS)
-        self.assertEqual(htd.total_seconds(), 86400.0)
+        self.assertEqual(htd.total_seconds(), 86400.000000001)
+        htd = TimeDelta(frac_seconds=29,
+                        frac_seconds_exponent=-12)
+        self.assertEqual(htd.total_seconds(), 29E-12)
 
     def test_highdatetimeFracSecondStr(self):
         htd = TimeDelta(days=1, seconds=1, microseconds=1)

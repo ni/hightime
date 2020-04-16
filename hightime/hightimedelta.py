@@ -95,7 +95,7 @@ class TimeDelta(object):
     def total_seconds(self):
         """Total seconds in the duration."""
         return (self.days * 86400) + self.seconds + \
-               (self.microseconds * (10**SITimeUnit.MICROSECONDS))
+               (self._frac_seconds * (10**self._frac_seconds_exponent))
 
     def __str__(self):
         s = str(timedelta(days=self._timedelta.days,
