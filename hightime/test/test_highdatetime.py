@@ -10,28 +10,47 @@ from .. import (
 )
 
 
-_isPython3Compat = (sys.version_info.major == 3)
-_isPython36Compat = (_isPython3Compat and (sys.version_info.minor >= 6))
-_isPython2Compat = (sys.version_info.major == 2)
+_isPython3Compat = sys.version_info.major == 3
+_isPython36Compat = _isPython3Compat and (sys.version_info.minor >= 6)
+_isPython2Compat = sys.version_info.major == 2
 
 
 class DateTimeTestCase(unittest.TestCase):
-
-    @unittest.skipIf(not(_isPython36Compat),
-                     "not supported in this version of Python")
+    @unittest.skipIf(not (_isPython36Compat), "not supported in this version of Python")
     def test_datetimePy36CompatibleCtor(self):
-        DateTime(year=1, month=1, day=1, hour=1, minute=1, second=1,
-                     microsecond=1, tzinfo=None, fold=1)
+        DateTime(
+            year=1,
+            month=1,
+            day=1,
+            hour=1,
+            minute=1,
+            second=1,
+            microsecond=1,
+            tzinfo=None,
+            fold=1,
+        )
 
-    @unittest.skipIf(_isPython36Compat,
-                     "not supported in this version of Python")
+    @unittest.skipIf(_isPython36Compat, "not supported in this version of Python")
     def test_datetimeCompatibleCtor(self):
-        DateTime(year=1, month=1, day=1, hour=1, minute=1, second=1,
-                     microsecond=1, tzinfo=None)
+        DateTime(
+            year=1,
+            month=1,
+            day=1,
+            hour=1,
+            minute=1,
+            second=1,
+            microsecond=1,
+            tzinfo=None,
+        )
 
     def test_basicCtor(self):
-        DateTime(year=1, month=1, day=1,
-                     frac_second=1, frac_second_exponent=SITimeUnit.NANOSECONDS)
+        DateTime(
+            year=1,
+            month=1,
+            day=1,
+            frac_second=1,
+            frac_second_exponent=SITimeUnit.NANOSECONDS,
+        )
 
     def test_ctorInvalidKWArgs(self):
         with self.assertRaises(TypeError):
@@ -46,8 +65,9 @@ class DateTimeTestCase(unittest.TestCase):
     def test_repr(self):
         hdt = DateTime(year=1, month=1, day=1, second=1, microsecond=1)
         self.assertEqual(hdt, eval(repr(hdt)))
-        hdt = DateTime(year=1, month=1, day=1, second=1,
-                           frac_second=1, frac_second_exponent=-1)
+        hdt = DateTime(
+            year=1, month=1, day=1, second=1, frac_second=1, frac_second_exponent=-1
+        )
         self.assertEqual(hdt, eval(repr(hdt)))
 
     def test_nanosecondDefaultFracSecondExponent(self):
@@ -65,8 +85,13 @@ class DateTimeTestCase(unittest.TestCase):
 
     def test_highdatetimeWithFracEqualDatetime(self):
         dt = datetime.datetime(year=1, month=1, day=1, microsecond=1)
-        hdt = DateTime(year=1, month=1, day=1,
-                           frac_second=1, frac_second_exponent=SITimeUnit.MICROSECONDS)
+        hdt = DateTime(
+            year=1,
+            month=1,
+            day=1,
+            frac_second=1,
+            frac_second_exponent=SITimeUnit.MICROSECONDS,
+        )
         self.assertEqual(dt, hdt)
 
         hdt = DateTime(year=1, month=1, day=1, microsecond=1)
@@ -97,89 +122,120 @@ class DateTimeTestCase(unittest.TestCase):
         self.assertEqual(DateTime.resolution, None)
 
     def test_highdatetimeFracsecondAttr(self):
-        hdt = DateTime(year=1, month=1, day=1, hour=1, minute=1, second=1,
-                           frac_second=1, frac_second_exponent=-9)
+        hdt = DateTime(
+            year=1,
+            month=1,
+            day=1,
+            hour=1,
+            minute=1,
+            second=1,
+            frac_second=1,
+            frac_second_exponent=-9,
+        )
         self.assertEqual(hdt.frac_second, 1)
         self.assertEqual(hdt.frac_second_exponent, -9)
 
     def test_highdatetimeFracsecondFracsecondexponentAndMicrosecondCtor(self):
         with self.assertRaises(TypeError) as exc:
-            DateTime(year=1, month=1, day=1,
-                         microsecond=1, frac_second=1, frac_second_exponent=-1)
-        self.assertEqual(exc.exception.args,
-                         ("Cannot specify both microsecond and frac_second",))
+            DateTime(
+                year=1,
+                month=1,
+                day=1,
+                microsecond=1,
+                frac_second=1,
+                frac_second_exponent=-1,
+            )
+        self.assertEqual(
+            exc.exception.args, ("Cannot specify both microsecond and frac_second",)
+        )
 
     def test_highdatetimeFracsecondAndMicrosecondCtor(self):
         with self.assertRaises(TypeError) as exc:
-            DateTime(year=1, month=1, day=1,
-                         microsecond=1, frac_second=1)
-        self.assertEqual(exc.exception.args,
-                         ("Cannot specify both microsecond and frac_second",))
+            DateTime(year=1, month=1, day=1, microsecond=1, frac_second=1)
+        self.assertEqual(
+            exc.exception.args, ("Cannot specify both microsecond and frac_second",)
+        )
 
     def test_highdatetimeFracsecondExponentAndMicrosecondCtor(self):
         with self.assertRaises(TypeError) as exc:
-            DateTime(year=1, month=1, day=1,
-                         microsecond=1, frac_second_exponent=-1)
-        self.assertEqual(exc.exception.args,
-                         ("Cannot specify both microsecond and frac_second_exponent",))
+            DateTime(year=1, month=1, day=1, microsecond=1, frac_second_exponent=-1)
+        self.assertEqual(
+            exc.exception.args,
+            ("Cannot specify both microsecond and frac_second_exponent",),
+        )
 
     def test_highdatetimePositiveFracsecondExponent(self):
         with self.assertRaises(TypeError) as exc:
-            DateTime(year=1, month=1, day=1,
-                         frac_second=1, frac_second_exponent=1)
-        self.assertEqual(exc.exception.args,
-                         ("frac_second_exponent must be a negative long/int", 1))
+            DateTime(year=1, month=1, day=1, frac_second=1, frac_second_exponent=1)
+        self.assertEqual(
+            exc.exception.args, ("frac_second_exponent must be a negative long/int", 1)
+        )
 
     def test_highdatetimeFloatFracsecondExponent(self):
         with self.assertRaises(TypeError) as exc:
-            DateTime(year=1, month=1, day=1,
-                         frac_second=1, frac_second_exponent=-1.1)
-        self.assertEqual(exc.exception.args,
-                         ("frac_second_exponent must be a negative long/int", -1.1))
+            DateTime(year=1, month=1, day=1, frac_second=1, frac_second_exponent=-1.1)
+        self.assertEqual(
+            exc.exception.args,
+            ("frac_second_exponent must be a negative long/int", -1.1),
+        )
 
     def test_highdatetimeNonNumFracsecondExponent(self):
         with self.assertRaises(TypeError) as exc:
-            DateTime(year=1, month=1, day=1,
-                         frac_second=1, frac_second_exponent="1")
-        self.assertEqual(exc.exception.args,
-                         ("frac_second_exponent must be a negative long/int", "1"))
+            DateTime(year=1, month=1, day=1, frac_second=1, frac_second_exponent="1")
+        self.assertEqual(
+            exc.exception.args,
+            ("frac_second_exponent must be a negative long/int", "1"),
+        )
 
     def test_highdatetimeFracsecondGreaterThanSecond(self):
         with self.assertRaises(ValueError) as exc:
-            DateTime(year=1, month=1, day=1,
-                         frac_second=11, frac_second_exponent=-1)
-        self.assertEqual(exc.exception.args,
-                         ("total fractional seconds >= 1 second", 1.1))
+            DateTime(year=1, month=1, day=1, frac_second=11, frac_second_exponent=-1)
+        self.assertEqual(
+            exc.exception.args, ("total fractional seconds >= 1 second", 1.1)
+        )
         with self.assertRaises(ValueError) as exc:
             DateTime(year=1, month=1, day=1, microsecond=1000000)
-        self.assertEqual(exc.exception.args,
-                         ("total fractional seconds >= 1 second", 1.0))
+        self.assertEqual(
+            exc.exception.args, ("total fractional seconds >= 1 second", 1.0)
+        )
 
     def test_highdatetimeFracSecondStr(self):
         hdt = DateTime(year=1, month=1, day=1, microsecond=1)
         self.assertEqual("0001-01-01 00:00:00.000001", str(hdt))
 
         # default frac_second_exponent
-        hdt = DateTime(year=1, month=1, day=1,
-                           hour=1, minute=1, second=1,
-                           frac_second=1)
+        hdt = DateTime(
+            year=1, month=1, day=1, hour=1, minute=1, second=1, frac_second=1
+        )
         self.assertEqual("0001-01-01 01:01:01+1e-9", str(hdt))
         # frac_second_exponent that should not use sci notation
-        hdt = DateTime(year=1, month=1, day=1,
-                           hour=1, minute=1, second=1,
-                           frac_second=1, frac_second_exponent=-5)
+        hdt = DateTime(
+            year=1,
+            month=1,
+            day=1,
+            hour=1,
+            minute=1,
+            second=1,
+            frac_second=1,
+            frac_second_exponent=-5,
+        )
         self.assertEqual("0001-01-01 01:01:01.00001", str(hdt))
         # very small frac_second_exponent
-        hdt = DateTime(year=1, month=1, day=1,
-                           hour=1, minute=1, second=1,
-                           frac_second=1, frac_second_exponent=-9999999)
+        hdt = DateTime(
+            year=1,
+            month=1,
+            day=1,
+            hour=1,
+            minute=1,
+            second=1,
+            frac_second=1,
+            frac_second_exponent=-9999999,
+        )
         self.assertEqual("0001-01-01 01:01:01+1e-9999999", str(hdt))
 
     def test_highdatetimeSubtractDateTime(self):
-        hdt1 = DateTime(year=1, month=1, day=1,
-                            frac_second=1, frac_second_exponent=-1)
-        hdt2 = DateTime(year=1, month=1, day=1,
-                            frac_second=2, frac_second_exponent=-1)
+        hdt1 = DateTime(year=1, month=1, day=1, frac_second=1, frac_second_exponent=-1)
+        hdt2 = DateTime(year=1, month=1, day=1, frac_second=2, frac_second_exponent=-1)
 
         expected = TimeDelta(frac_seconds=1, frac_seconds_exponent=-1)
         actual = hdt2 - hdt1
@@ -194,8 +250,7 @@ class DateTimeTestCase(unittest.TestCase):
         self.assertEqual(expected, actual)
 
     def test_highdatetimeSubtractDatetime(self):
-        hdt = DateTime(year=1, month=1, day=1,
-                           frac_second=1, frac_second_exponent=-1)
+        hdt = DateTime(year=1, month=1, day=1, frac_second=1, frac_second_exponent=-1)
         dt = datetime.datetime(year=1, month=1, day=1)
         expected = TimeDelta(frac_seconds=1, frac_seconds_exponent=-1)
         actual = hdt - dt
@@ -206,8 +261,7 @@ class DateTimeTestCase(unittest.TestCase):
         self.assertEqual(expected, actual)
 
     def test_highdatetimeAddDatetime(self):
-        hdt = DateTime(year=1, month=1, day=1,
-                           frac_second=1, frac_second_exponent=-1)
+        hdt = DateTime(year=1, month=1, day=1, frac_second=1, frac_second_exponent=-1)
         dt = datetime.datetime(year=1, month=1, day=1)
         with self.assertRaises(TypeError) as exc:
             result = hdt + dt
@@ -215,31 +269,49 @@ class DateTimeTestCase(unittest.TestCase):
             result = dt + hdt
 
     def test_highdatetimeAddTimedelta(self):
-        hdt = DateTime(year=1, month=1, day=1,
-                           frac_second=1, frac_second_exponent=-1)
+        hdt = DateTime(year=1, month=1, day=1, frac_second=1, frac_second_exponent=-1)
         td = datetime.timedelta(seconds=1, microseconds=1)
-        expected = DateTime(year=1, month=1, day=1, second=1,
-                                frac_second=100001,
-                                frac_second_exponent=SITimeUnit.MICROSECONDS)
+        expected = DateTime(
+            year=1,
+            month=1,
+            day=1,
+            second=1,
+            frac_second=100001,
+            frac_second_exponent=SITimeUnit.MICROSECONDS,
+        )
         actual = hdt + td
         self.assertEqual(expected, actual)
         actual = td + hdt
         self.assertEqual(expected, actual)
 
         # ensure proper rollover to the next second
-        hdt2 = DateTime(year=1, month=1, day=1,
-                            frac_second=999999,
-                            frac_second_exponent=SITimeUnit.MICROSECONDS)
-        expected = DateTime(year=1, month=1, day=1, second=2,
-                                frac_second=0,
-                                frac_second_exponent=SITimeUnit.MICROSECONDS)
+        hdt2 = DateTime(
+            year=1,
+            month=1,
+            day=1,
+            frac_second=999999,
+            frac_second_exponent=SITimeUnit.MICROSECONDS,
+        )
+        expected = DateTime(
+            year=1,
+            month=1,
+            day=1,
+            second=2,
+            frac_second=0,
+            frac_second_exponent=SITimeUnit.MICROSECONDS,
+        )
         actual = hdt2 + td
         self.assertEqual(expected, actual)
 
         td2 = datetime.timedelta(seconds=1, microseconds=2)
-        expected = DateTime(year=1, month=1, day=1, second=2,
-                                frac_second=1,
-                                frac_second_exponent=SITimeUnit.MICROSECONDS)
+        expected = DateTime(
+            year=1,
+            month=1,
+            day=1,
+            second=2,
+            frac_second=1,
+            frac_second_exponent=SITimeUnit.MICROSECONDS,
+        )
         actual = hdt2 + td2
         self.assertEqual(expected, actual)
 
@@ -254,33 +326,51 @@ class DateTimeTestCase(unittest.TestCase):
         self.assertEqual(expected, actual)
 
     def test_highdatetimeAddTimeDelta(self):
-        hdt = DateTime(year=1, month=1, day=1,
-                           frac_second=1, frac_second_exponent=-1)
+        hdt = DateTime(year=1, month=1, day=1, frac_second=1, frac_second_exponent=-1)
         htd = TimeDelta(seconds=1, frac_seconds=1, frac_seconds_exponent=-2)
-        expected = DateTime(year=1, month=1, day=1, second=1,
-                                frac_second=11, frac_second_exponent=-2)
+        expected = DateTime(
+            year=1, month=1, day=1, second=1, frac_second=11, frac_second_exponent=-2
+        )
         actual = hdt + htd
         self.assertEqual(expected, actual)
         actual = htd + hdt
         self.assertEqual(expected, actual)
 
         # ensure proper rollover to the next second
-        hdt2 = DateTime(year=1, month=1, day=1,
-                            frac_second=999999,
-                            frac_second_exponent=SITimeUnit.MICROSECONDS)
-        htd2 = TimeDelta(seconds=1, frac_seconds=1,
-                             frac_seconds_exponent=SITimeUnit.MICROSECONDS)
-        expected = DateTime(year=1, month=1, day=1, second=2,
-                                frac_second=0,
-                                frac_second_exponent=SITimeUnit.MICROSECONDS)
+        hdt2 = DateTime(
+            year=1,
+            month=1,
+            day=1,
+            frac_second=999999,
+            frac_second_exponent=SITimeUnit.MICROSECONDS,
+        )
+        htd2 = TimeDelta(
+            seconds=1, frac_seconds=1, frac_seconds_exponent=SITimeUnit.MICROSECONDS
+        )
+        expected = DateTime(
+            year=1,
+            month=1,
+            day=1,
+            second=2,
+            frac_second=0,
+            frac_second_exponent=SITimeUnit.MICROSECONDS,
+        )
         actual = hdt2 + htd2
         self.assertEqual(expected, actual)
 
-        htd3 = TimeDelta(seconds=1, frac_seconds=999999,
-                             frac_seconds_exponent=SITimeUnit.MICROSECONDS)
-        expected = DateTime(year=1, month=1, day=1, second=2,
-                                frac_second=999998,
-                                frac_second_exponent=SITimeUnit.MICROSECONDS)
+        htd3 = TimeDelta(
+            seconds=1,
+            frac_seconds=999999,
+            frac_seconds_exponent=SITimeUnit.MICROSECONDS,
+        )
+        expected = DateTime(
+            year=1,
+            month=1,
+            day=1,
+            second=2,
+            frac_second=999998,
+            frac_second_exponent=SITimeUnit.MICROSECONDS,
+        )
         actual = hdt2 + htd3
         self.assertEqual(expected, actual)
 
@@ -292,48 +382,48 @@ class DateTimeTestCase(unittest.TestCase):
         before = later
         later += increment
         self.assertNotEqual(before, later)
-        self.assertEqual(increment, later-before)
+        self.assertEqual(increment, later - before)
 
     def test_microsecondProp(self):
         hdt = DateTime(1, 1, 1)
         self.assertEqual(hdt.microsecond, 0)
         hdt = DateTime(1, 1, 1, microsecond=1)
         self.assertEqual(hdt.microsecond, 1)
-        hdt = DateTime(1, 1, 1,
-                           frac_second=1,
-                           frac_second_exponent=SITimeUnit.MICROSECONDS)
+        hdt = DateTime(
+            1, 1, 1, frac_second=1, frac_second_exponent=SITimeUnit.MICROSECONDS
+        )
         self.assertEqual(hdt.microsecond, 1)
-        hdt = DateTime(1, 1, 1,
-                           frac_second=1,
-                           frac_second_exponent=SITimeUnit.MILLISECONDS)
+        hdt = DateTime(
+            1, 1, 1, frac_second=1, frac_second_exponent=SITimeUnit.MILLISECONDS
+        )
         self.assertEqual(hdt.microsecond, 1000)
-        hdt = DateTime(1, 1, 1,
-                           frac_second=1,
-                           frac_second_exponent=SITimeUnit.NANOSECONDS)
+        hdt = DateTime(
+            1, 1, 1, frac_second=1, frac_second_exponent=SITimeUnit.NANOSECONDS
+        )
         self.assertEqual(hdt.microsecond, 0)
-        hdt = DateTime(1, 1, 1,
-                           frac_second=1111,
-                           frac_second_exponent=SITimeUnit.NANOSECONDS)
+        hdt = DateTime(
+            1, 1, 1, frac_second=1111, frac_second_exponent=SITimeUnit.NANOSECONDS
+        )
         self.assertEqual(hdt.microsecond, 1)
 
     def test_nanosecondProp(self):
         hdt = DateTime(1, 1, 1)
         self.assertEqual(hdt.nanosecond, 0)
-        hdt = DateTime(1, 1, 1,
-                           frac_second=1,
-                           frac_second_exponent=SITimeUnit.NANOSECONDS)
+        hdt = DateTime(
+            1, 1, 1, frac_second=1, frac_second_exponent=SITimeUnit.NANOSECONDS
+        )
         self.assertEqual(hdt.nanosecond, 1)
-        hdt = DateTime(1, 1, 1,
-                           frac_second=1,
-                           frac_second_exponent=SITimeUnit.MICROSECONDS)
+        hdt = DateTime(
+            1, 1, 1, frac_second=1, frac_second_exponent=SITimeUnit.MICROSECONDS
+        )
         self.assertEqual(hdt.nanosecond, 0)
-        hdt = DateTime(1, 1, 1,
-                           frac_second=1,
-                           frac_second_exponent=SITimeUnit.PICOSECONDS)
+        hdt = DateTime(
+            1, 1, 1, frac_second=1, frac_second_exponent=SITimeUnit.PICOSECONDS
+        )
         self.assertEqual(hdt.nanosecond, 0)
-        hdt = DateTime(1, 1, 1,
-                           frac_second=1111,
-                           frac_second_exponent=SITimeUnit.PICOSECONDS)
+        hdt = DateTime(
+            1, 1, 1, frac_second=1111, frac_second_exponent=SITimeUnit.PICOSECONDS
+        )
         self.assertEqual(hdt.nanosecond, 1)
 
     def test_fromtimestamp(self):
@@ -365,6 +455,7 @@ class DateTimeTestCase(unittest.TestCase):
         self.assertTrue(isinstance(hdt, DateTime))
         self.assertEqual(hdt, eval(repr(hdt)))
         self.assertEqual(hdt, DateTime(1, 1, 1, 1))
+
 
 if __name__ == "__main__":
     unittest.main()
