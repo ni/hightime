@@ -131,7 +131,7 @@ Examples:
 >>> print delta_t
 22s 130ms
 
-"""
+"""  # noqa: E501
 
 from .highdatetime import DateTime  # noqa: F401
 from .hightimedelta import TimeDelta  # noqa: F401
