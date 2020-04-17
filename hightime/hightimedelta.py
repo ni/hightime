@@ -6,7 +6,7 @@ from .sitimeunit import SITimeUnit
 
 class TimeDelta(object):
 
-    __slots__ = "_timedelta", "_frac_seconds", "_frac_seconds_exponent"
+    __slots__ = ("_timedelta", "_frac_seconds", "_frac_seconds_exponent")
 
     # TimeDelta resolution is virtually infinite, None represents infinity?
     resolution = None
@@ -61,7 +61,7 @@ class TimeDelta(object):
         if (microseconds != 0) or (milliseconds != 0):
             if frac_seconds != 0:
                 raise TypeError(
-                    "Cannot specify microseconds or " "milliseconds with frac_seconds"
+                    "Cannot specify microseconds or milliseconds with frac_seconds"
                 )
             if frac_seconds_exponent is not None:
                 raise TypeError(

@@ -5,7 +5,7 @@ from .sitimeunit import SITimeUnit
 
 class DateTime(object):
 
-    __slots__ = "_datetime", "_frac_second", "_frac_second_exponent"
+    __slots__ = ("_datetime", "_frac_second", "_frac_second_exponent")
 
     # DateTime resolution is virtually infinite, None represents infinity?
     resolution = None
