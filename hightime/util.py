@@ -2,8 +2,8 @@ import sys
 
 from .sitimeunit import SITimeUnit
 
-isPython3Compat = (sys.version_info.major == 3)
-isPython36Compat = (isPython3Compat and (sys.version_info.minor >= 6))
+isPython3Compat = sys.version_info.major == 3
+isPython36Compat = isPython3Compat and (sys.version_info.minor >= 6)
 
 
 def normalize_frac_seconds(a, b):
@@ -52,23 +52,20 @@ def normalize_frac_seconds(a, b):
         raise TypeError("invalid type for b: %s" % type(b))
 
     if a_frac_seconds_exponent == b_frac_seconds_exponent:
-        return (a_frac_seconds, b_frac_seconds,
-                a_frac_seconds_exponent)
+        return (a_frac_seconds, b_frac_seconds, a_frac_seconds_exponent)
 
-    multiplier = 10 ** (abs(a_frac_seconds_exponent -
-                            b_frac_seconds_exponent))
+    multiplier = 10 ** (abs(a_frac_seconds_exponent - b_frac_seconds_exponent))
     # a is more precise, multiply b
     if a_frac_seconds_exponent < b_frac_seconds_exponent:
-        return (a_frac_seconds, b_frac_seconds * multiplier,
-                a_frac_seconds_exponent)
+        return (a_frac_seconds, b_frac_seconds * multiplier, a_frac_seconds_exponent)
     # b is more precise, multiply a
     else:
-        return (a_frac_seconds * multiplier, b_frac_seconds,
-                b_frac_seconds_exponent)
+        return (a_frac_seconds * multiplier, b_frac_seconds, b_frac_seconds_exponent)
 
 
-def get_subsecond_component(frac_seconds, frac_seconds_exponent,
-                            subsec_component_exponent, upper_exponent_limit):
+def get_subsecond_component(
+    frac_seconds, frac_seconds_exponent, subsec_component_exponent, upper_exponent_limit
+):
     """Return the number of subseconds from frac_seconds *
     (10**frac_seconds_exponent) corresponding to subsec_component_exponent that
     does not exceed upper_exponent_limit.
@@ -85,7 +82,7 @@ def get_subsecond_component(frac_seconds, frac_seconds_exponent,
     Same example as above, but with upper_exponent_limit = SITimeUnit.SECONDS,
     123456789 would be returned.
     """
-    total_subsecs = int(frac_seconds * (10 ** (frac_seconds_exponent -
-                                               subsec_component_exponent)))
-    return total_subsecs % (10 ** abs(subsec_component_exponent -
-                                      upper_exponent_limit))
+    total_subsecs = int(
+        frac_seconds * (10 ** (frac_seconds_exponent - subsec_component_exponent))
+    )
+    return total_subsecs % (10 ** abs(subsec_component_exponent - upper_exponent_limit))
