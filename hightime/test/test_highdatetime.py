@@ -14,7 +14,7 @@ from .. import (
 _isPython36OrHigher = sys.version_info < (3, 6)
 
 
-@pytest.mark.skipif(_isPython36OrHigher, reason="requires python3.6 or higher")
+@pytest.mark.skipif(not _isPython36OrHigher, reason="requires python3.6 or higher")
 def test_datetimePy36CompatibleCtor():
     DateTime(
         year=1,
