@@ -206,7 +206,7 @@ class datetime(std_datetime.datetime):
             yoctosecond = self.yoctosecond
         if tzinfo is True:
             tzinfo = self.tzinfo
-        if _SUPPORTS_FOLD:
+        if _PY36:
             kwargs.setdefault("fold", self.fold)
         return type(self)(
             year,
@@ -405,19 +405,19 @@ class datetime(std_datetime.datetime):
             )
 
     @classmethod
-    def _fromBase(cls, std_datetime):
+    def _fromBase(cls, base_datetime):
         ctor_kwargs = dict()
-        if _SUPPORTS_FOLD:
-            ctor_kwargs = dict(fold=std_datetime.fold)
+        if _PY36:
+            ctor_kwargs = dict(fold=base_datetime.fold)
 
         return cls(
-            year=std_datetime.year,
-            month=std_datetime.month,
-            day=std_datetime.day,
-            hour=std_datetime.hour,
-            minute=std_datetime.minute,
-            second=std_datetime.second,
-            microsecond=std_datetime.microsecond,
-            tzinfo=std_datetime.tzinfo,
+            year=base_datetime.year,
+            month=base_datetime.month,
+            day=base_datetime.day,
+            hour=base_datetime.hour,
+            minute=base_datetime.minute,
+            second=base_datetime.second,
+            microsecond=base_datetime.microsecond,
+            tzinfo=base_datetime.tzinfo,
             **ctor_kwargs
         )
