@@ -125,22 +125,24 @@ def test_datetime_repr(dt, middle_part):
 def test_datetime_isoformat(dt, expected):
     assert dt.isoformat() == expected
     assert dt.isoformat(sep="X") == expected.replace("T", "X")
-    assert dt.isoformat(timespec="hours") == expected[:13]
-    assert dt.isoformat(timespec="minutes") == expected[:16]
-    assert dt.isoformat(timespec="seconds") == expected[:19]
 
-    if len(expected) < 20:
-        expected += "."
-    expected = expected.ljust(44, "0")
+    if _isPython36OrHigher:
+        assert dt.isoformat(timespec="hours") == expected[:13]
+        assert dt.isoformat(timespec="minutes") == expected[:16]
+        assert dt.isoformat(timespec="seconds") == expected[:19]
 
-    assert dt.isoformat(timespec="milliseconds") == expected[:23]
-    assert dt.isoformat(timespec="microseconds") == expected[:26]
-    assert dt.isoformat(timespec="nanoseconds") == expected[:29]
-    assert dt.isoformat(timespec="picoseconds") == expected[:32]
-    assert dt.isoformat(timespec="femtoseconds") == expected[:35]
-    assert dt.isoformat(timespec="attoseconds") == expected[:38]
-    assert dt.isoformat(timespec="zeptoseconds") == expected[:41]
-    assert dt.isoformat(timespec="yoctoseconds") == expected[:44]
+        if len(expected) < 20:
+            expected += "."
+        expected = expected.ljust(44, "0")
+
+        assert dt.isoformat(timespec="milliseconds") == expected[:23]
+        assert dt.isoformat(timespec="microseconds") == expected[:26]
+        assert dt.isoformat(timespec="nanoseconds") == expected[:29]
+        assert dt.isoformat(timespec="picoseconds") == expected[:32]
+        assert dt.isoformat(timespec="femtoseconds") == expected[:35]
+        assert dt.isoformat(timespec="attoseconds") == expected[:38]
+        assert dt.isoformat(timespec="zeptoseconds") == expected[:41]
+        assert dt.isoformat(timespec="yoctoseconds") == expected[:44]
 
 
 @pytest.mark.parametrize(
@@ -330,7 +332,7 @@ def test_datetime_strptime_type():
 
 def test_datetime_tzname():
     assert datetime().tzname() is None
-    assert datetime(tzinfo=std_datetime.timezone.utc).tzname() == "UTC"
+    assert datetime(tzinfo=std_datetime.timezone.utc).tzname().startswith("UTC")
     assert datetime(tzinfo=tzinfo(hours=1)).tzname() == "UTC+01:00"
 
 
@@ -390,7 +392,9 @@ def test_datetime_utcfromtimestamp_type():
 
 
 def test_datetime_astimezone_type():
-    assert isinstance(datetime().astimezone(tzinfo(hours=1)), hightime.datetime)
+    assert isinstance(
+        datetime(tzinfo(hours=2)).astimezone(tzinfo(hours=1)), hightime.datetime
+    )
 
 
 def test_datetime_replace():

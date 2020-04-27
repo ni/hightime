@@ -1,10 +1,11 @@
 import datetime as std_datetime
+import sys
 from collections import OrderedDict
 from itertools import dropwhile
 
 import hightime
 
-_SUPPORTS_FOLD = hasattr(std_datetime.datetime, "fold")
+_PY36 = sys.version_info >= (3, 6)
 
 
 # Mostly ripped from `datetime`'s
@@ -94,7 +95,7 @@ class datetime(std_datetime.datetime):
     microsecond = std_datetime.datetime.microsecond
     tzinfo = std_datetime.datetime.tzinfo
 
-    if _SUPPORTS_FOLD:
+    if _PY36:
         fold = std_datetime.datetime.fold
 
     @property
@@ -164,6 +165,12 @@ class datetime(std_datetime.datetime):
         iso_strs = super().isoformat(sep, timespec="seconds").split("+")
         iso_strs[0] += "." + fmt.format(self.microsecond, value)
         return "+".join(iso_strs)
+
+    if not _PY36:
+        _isoformat = isoformat
+
+        def isoformat(self, sep="T"):
+            return self._isoformat(sep)
 
     def replace(
         self,
@@ -350,7 +357,7 @@ class datetime(std_datetime.datetime):
     # Hash support
 
     def __hash__(self):
-        t = self.replace(fold=0) if self.fold else self
+        t = self.replace(fold=0) if getattr(self, "fold", 0) else self
         offset = t.utcoffset()
         if offset is None:
             return hash(
