@@ -153,7 +153,10 @@ class datetime(std_datetime.datetime):
                     break
 
         if timespec not in specs:
-            return super().isoformat(sep, timespec=timespec)
+            kwargs = dict()
+            if _PY36:
+                kwargs["timespec"] = timespec
+            return super().isoformat(sep, **kwargs)
 
         value = self._yoctosecond + (self._femtosecond * 1000000000)
         for spec in specs:
@@ -162,7 +165,8 @@ class datetime(std_datetime.datetime):
             value //= 1000
 
         fmt = specs[timespec]
-        iso_strs = super().isoformat(sep, timespec="seconds").split("+")
+        iso_strs = super().isoformat(sep).split("+")
+        iso_strs[0] = iso_strs[0].split(".")[0]
         iso_strs[0] += "." + fmt.format(self.microsecond, value)
         return "+".join(iso_strs)
 
