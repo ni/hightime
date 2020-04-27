@@ -393,7 +393,7 @@ def test_datetime_utcfromtimestamp_type():
 
 def test_datetime_astimezone_type():
     assert isinstance(
-        datetime(tzinfo(hours=2)).astimezone(tzinfo(hours=1)), hightime.datetime
+        datetime(tzinfo=tzinfo(hours=2)).astimezone(tzinfo(hours=1)), hightime.datetime
     )
 
 
