@@ -426,9 +426,23 @@ def test_datetime_replace():
 @pytest.mark.parametrize(
     "dt, expected",
     [
-        (datetime(2020, 4, 21, 15, 29, 34), 1587500974.0),
-        (datetime(2020, 4, 21, 15, 29, 34, us=3000), 1587500974.003),
-        (datetime(2020, 4, 21, 15, 29, 34, us=30), 1587500974.00003),
+        # I'd love to just put the float as expected, but if we don't pass the timezone,
+        # it defaults to the system-timezone. There isn't a reliable way to override the
+        # timezone on Windows, so this can't be fixed by a fixture.
+        (
+            datetime(2020, 4, 21, 15, 29, 34),
+            std_datetime.datetime(2020, 4, 21, 15, 29, 34).timestamp(),
+        ),
+        (
+            datetime(2020, 4, 21, 15, 29, 34, us=3000),
+            std_datetime.datetime(
+                2020, 4, 21, 15, 29, 34, microsecond=3000
+            ).timestamp(),
+        ),
+        (
+            datetime(2020, 4, 21, 15, 29, 34, us=30),
+            std_datetime.datetime(2020, 4, 21, 15, 29, 34, microsecond=30).timestamp(),
+        ),
         # Note the binary representation isn't exactly equal to our expected value
         # >>> from decimal import Decimal
         # >>> from hightime import datetime
@@ -437,10 +451,15 @@ def test_datetime_replace():
         # ...    .timestamp()
         # ... )
         # Decimal('1587500974.000030040740966796875')
-        (datetime(2020, 4, 21, 15, 29, 34, us=30, fs=200), 1587500974.0000300000002),
+        (
+            datetime(2020, 4, 21, 15, 29, 34, us=30, fs=200),
+            std_datetime.datetime(2020, 4, 21, 15, 29, 34, microsecond=30).timestamp()
+            + 0.000000002,
+        ),
         (
             datetime(2020, 4, 21, 15, 29, 34, us=30, fs=2, ys=1),
-            1587500974.0000300000000020000001,
+            std_datetime.datetime(2020, 4, 21, 15, 29, 34, microsecond=30).timestamp()
+            + 0.0000000020000001,
         ),
         (
             datetime(2020, 4, 21, 15, us=30, fs=2, ys=1, tzinfo=tzinfo(hours=2)),
