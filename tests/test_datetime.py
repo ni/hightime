@@ -8,7 +8,7 @@ import pytest
 from .shorthands import datetime
 from .shorthands import timedelta
 
-_isPython36OrHigher = sys.version_info < (3, 6)
+_isPython36OrHigher = sys.version_info >= (3, 6)
 
 
 _SUBMICROSECOND_FIELDS = [
