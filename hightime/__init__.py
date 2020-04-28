@@ -1,7 +1,6 @@
 """hightime
 
-This package extends the built-in datetime types to allow for sub-microsecond values,
-when possible.
+This package extends the built-in datetime types to allow for sub-microsecond values.
 
 The classes defined in this package are:
 
@@ -19,6 +18,7 @@ Please note that due to floating point arithmetic inaccuracies, the ability to s
 sub-microsecond values in terms of much larger units (weeks, days, seconds) has been
 limited. For the exact limitation, please consult the various methods.
 """
+import datetime as _std_datetime
 
 
 from hightime._datetime import datetime
@@ -29,17 +29,29 @@ datetime.__module__ = __name__
 timedelta.__module__ = __name__
 
 
-datetime.min = datetime(1, 1, 1)
-datetime.max = datetime(9999, 12, 31, 23, 59, 59, 999999, 999999999, 999999999)
+datetime.min = datetime(
+    year=_std_datetime.datetime.min.year,
+    month=_std_datetime.datetime.min.month,
+    day=_std_datetime.datetime.min.day,
+)
+datetime.max = datetime(
+    year=_std_datetime.datetime.max.year,
+    month=_std_datetime.datetime.max.month,
+    day=_std_datetime.datetime.max.day,
+    hour=_std_datetime.datetime.max.hour,
+    minute=_std_datetime.datetime.max.minute,
+    second=_std_datetime.datetime.max.second,
+    microsecond=_std_datetime.datetime.max.microsecond,
+    femtosecond=999999999,
+    yoctosecond=999999999,
+)
 datetime.resolution = timedelta(yoctoseconds=1)
 
-timedelta.min = timedelta(-999999999)
+timedelta.min = timedelta(days=_std_datetime.timedelta.min.days)
 timedelta.max = timedelta(
-    days=999999999,
-    hours=23,
-    minutes=59,
-    seconds=59,
-    microseconds=999999,
+    days=_std_datetime.timedelta.max.days,
+    seconds=_std_datetime.timedelta.max.seconds,
+    microseconds=_std_datetime.timedelta.max.microseconds,
     femtoseconds=999999999,
     yoctoseconds=999999999,
 )

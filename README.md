@@ -27,13 +27,13 @@ pip install hightime
 >>> from hightime import timedelta
 
 >>> high_noon = datetime(
-...   1952,
-...   7,
-...   24,
-...   12,
-...   0,
-...   30,
-...   0,
+...   year=1952,
+...   month=7,
+...   day=24,
+...   hour=12,
+...   minute=0,
+...   second=30,
+...   microsecond=0,
 ... )
 
 >>> print(high_noon)
