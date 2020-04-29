@@ -233,7 +233,7 @@ class datetime(std_datetime.datetime):
         s = "{}.{}".format(self.__class__.__module__, self.__class__.__qualname__)
 
         # We only expose subminute fields if they aren't 0
-        subsecond_fields = reversed(
+        subminute_fields = reversed(
             list(
                 dropwhile(
                     lambda x: x == 0,
@@ -248,7 +248,7 @@ class datetime(std_datetime.datetime):
         )
 
         values = [self.year, self.month, self.day, self.hour, self.minute] + list(
-            subsecond_fields
+            subminute_fields
         )
         s += "({}".format(", ".join(map(str, values)))
 

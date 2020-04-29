@@ -102,10 +102,10 @@ class timedelta(std_datetime.timedelta):
         femtoseconds, yoctoseconds = divmod(yoctoseconds, _YS_PER_FS)
 
         self = super().__new__(
-            cls, days=int(days), seconds=int(seconds), microseconds=int(microseconds),
+            cls, days=days, seconds=seconds, microseconds=microseconds,
         )
 
-        self._femtoseconds = int(femtoseconds)
+        self._femtoseconds = femtoseconds
         self._yoctoseconds = round(yoctoseconds)
         return self
 
