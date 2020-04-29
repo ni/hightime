@@ -221,14 +221,12 @@ class timedelta(std_datetime.timedelta):
         return NotImplemented
 
     def __neg__(self):
-        return timedelta(
-            **{field: -(getattr(self, field, 0)) for field in _FIELD_NAMES}
-        )
+        return timedelta(**{field: -(getattr(self, field)) for field in _FIELD_NAMES})
 
     def __mul__(self, other):
         if isinstance(other, (int, float)):
             return timedelta(
-                **{field: getattr(self, field, 0) * other for field in _FIELD_NAMES}
+                **{field: getattr(self, field) * other for field in _FIELD_NAMES}
             )
         return NotImplemented
 
