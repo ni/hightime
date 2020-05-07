@@ -1,138 +1,58 @@
-"""hightime - rick.ratzel@ni.com
+"""hightime
 
-FIXME: update this docstring to reflect the name change to "hightime" and that
-it extends datetime.
-
-This package defines a universal timestamp type which can be used to represent
-a point in time - in whole or arbitrary fractional units of seconds - since a
-predetermined Epoch.  This type is currently "Epoch-less" in that it simply
-maintains a count, but may be extended in the future to also indicate the Epoch
-for which the count is relative to in describing the point in time.  In
-practice, the Epoch is understood to be part of a larger application context
-which is known by users, for example, time.time() returns a count from the
-POSIX Epoch on a Linux system.
-
-The classes defined in this package are intended to provide utilities that make
-it easy to work with timestamps.  This includes common operators (subtraction,
-addition, comparisons) and human-readable string representations using standard
-units.  Other helper utilities will be added as needed.
-
-These classes are based on Python's "long" (for Python versions 2.x that
-support it) or "int" (for Python version 3.x that support int as long) types,
-which are implementations of BIGNUM
-(https://en.wikipedia.org/wiki/Arbitrary-precision_arithmetic) and allow users
-to express timestamps to virtually limitless precision.  This seems more
-"pythonic" in that it is consistent with other numeric types that do not
-require the user to know the size upfront.
+This package extends the built-in datetime types to allow for sub-microsecond values.
 
 The classes defined in this package are:
 
-   Timespan
+    datetime
 
-      A Timespan represents a time duration.  Instances of Timespans are
-      commonly used when adding or subtracting to or from a Timestamp to get a
-      different Timestamp that represents a different point in time.  A
-      Timespan is also returned when two Timestamps are subtracted from each
-      other, and in this case, it represents the difference in time between the
-      two points. Timespans can have a negative value that can be used during
-      Timestamp subtractions to indicate if a Timestamp is "ahead" or "behind"
-      another.
+        An impedance-matched subclass of datetime.datetime with sub-microsecond
+        capabilities.
 
-      A Timespan can be constructed in a number of different ways:
-         Timespan( <int n seconds>, [exponent=<multiplier>] )
+    timedelta
 
-            Create a timespan of length n seconds.  exponent defaults to a 1.0
-            multiplier, representing whole seconds.  If a unit is specified,
-            the span will be a duration of length n exponent.
+        An impedance-matched subclass of datetime.timedelta with sub-microsecond
+        capabilities.
 
-         Timespan( <float n seconds>, [exponent=<multiplier>] )
-
-            Create a timespan of length n seconds with potential fractional
-            seconds included.  The exponent of the fractional seconds depends on
-            the number of sig figs after the decimal point, as determined by
-            the default string repr of the float.
-
-            NOTE: the nature of floating point numbers could lead to excessive
-            false precision when represented in a timespan. To get exactly the
-            precision needed, construct with either a string repr of the
-            floating point (inconvenient, but used frequently in examples for
-            the Python Decimal module), or use separate seconds,
-            fractionalSeconds constructor args.
-
-         Timespan( <string n seconds>, [exponent=<multiplier>] )
-
-            Like the float constructor, but allows for exact number
-            representation rather than floating point noise.
-
-         Timespan( <int n seconds>,
-                   <int m fractional_seconds>, [frac_exponent=<multiplier>] )
-
-            Constructs a timespan using whole seconds and separate fractional
-            seconds both represented as integers.  The default exponent for
-            fractional seconds is nanoseconds, but if frac_exponent is specified,
-            will be in frac_exponent.
-
-      A Timespan also supports __add__(), __sub__(), __eq__(), __lt__(),
-      __gt__() which should work "as expected".
+Please note that due to floating point arithmetic inaccuracies, the ability to specify
+sub-microsecond values in terms of much larger units (weeks, days, seconds) has been
+limited. For the exact limitation, please consult the various methods.
+"""
+import datetime as _std_datetime
 
 
-   Timestamp
+from hightime._datetime import datetime
+from hightime._timedelta import timedelta
 
-      Timestamp inherits from Timespan and adds a restriction that it cannot be
-      negative, since it represents a moment in time.
+# Hide that it was defined in a helper file
+datetime.__module__ = __name__
+timedelta.__module__ = __name__
 
 
-Other useful constants are:
+datetime.min = datetime(
+    year=_std_datetime.datetime.min.year,
+    month=_std_datetime.datetime.min.month,
+    day=_std_datetime.datetime.min.day,
+)
+datetime.max = datetime(
+    year=_std_datetime.datetime.max.year,
+    month=_std_datetime.datetime.max.month,
+    day=_std_datetime.datetime.max.day,
+    hour=_std_datetime.datetime.max.hour,
+    minute=_std_datetime.datetime.max.minute,
+    second=_std_datetime.datetime.max.second,
+    microsecond=_std_datetime.datetime.max.microsecond,
+    femtosecond=999999999,
+    yoctosecond=999999999,
+)
+datetime.resolution = timedelta(yoctoseconds=1)
 
-   seconds, milliseconds, microseconds, nanoseconds, picoseconds,
-   femtoseconds, attoseconds, zeptoseconds, yoctoseconds
-
-      These can be used as values to the "exponent" or "frac_exponent" kwargs when
-      constructing a Timestamp or Timespan.  Their values are the
-      multiplication factor corresponding to the metric prefix they represent.
-      For example, nanoseconds is 1e-9.
-
-Examples:
->>> from hightime import *
-
->>> print Hightime( 22 )
-22s
-
->>> print Hightime( 22.23 )
-22s 230ms
-
->>> print Hightime( 22.23, exponent=microseconds )
-0s 22230ns
-
->>> print Hightime( 22.23, exponent=microseconds ) + 12345e6
-12345000000s 22230ns
-
->>> print Hightime( 22.23, exponent=microseconds ) + 12345.1
-12345s 100022230ns
-
->>> print Hightime( time.time() )
-1504804266s 472007036209ps
-
->>> print Hightime( 1234567890, 123456789 )
-1234567890s 123456789ns
-
->>> print Hightime( 0, 1000000000 )
-1s 0ns
-
->>> print Hightime( 1, 2222222222 )
-3s 222222222ns
-
->>> print Hightime( "9" * 99, exponent=yoctoseconds )
-999999999999999999999999999999999999999999999999999999999999999999999999999s 999999999999999999999999000e-27s
-
->>> delta_t = Hightime( 22.23 ) - Hightime( 0.1 )
->>> delta_t
-<hightimedelta.TimeDelta object at 0x7f682e322cd0>
->>> print delta_t
-22s 130ms
-
-"""  # noqa: E501
-
-from .highdatetime import DateTime  # noqa: F401
-from .hightimedelta import TimeDelta  # noqa: F401
-from .sitimeunit import SITimeUnit  # noqa: F401
+timedelta.min = timedelta(days=_std_datetime.timedelta.min.days)
+timedelta.max = timedelta(
+    days=_std_datetime.timedelta.max.days,
+    seconds=_std_datetime.timedelta.max.seconds,
+    microseconds=_std_datetime.timedelta.max.microseconds,
+    femtoseconds=999999999,
+    yoctoseconds=999999999,
+)
+timedelta.resolution = timedelta(yoctoseconds=1)

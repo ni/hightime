@@ -1,12 +1,12 @@
-Hightime
-========
+# Hightime
 
-Overview
---------
-Hightime allows for virtually infinite sub-second precision by providing API-compatible replacements for datetime.datetime (hightime.DateTime) and datetime.timedelta (hightime.TimeDelta).
+## Overview
 
-Installation
-------------
+Hightime allows for up to yoctosecond precision replacements for the datetime datetime
+and timedelta types.
+
+## Installation
+
 Hightime can be installed by cloning the master branch and then in a command
 line in the directory of setup.py run:
 
@@ -20,61 +20,50 @@ Or by installing from PyPI using:
 pip install hightime
 ```
 
-Examples
---------
+## Examples
 
 ```python
->>> from hightime import DateTime, TimeDelta, SITimeUnit
+>>> from hightime import datetime
+>>> from hightime import timedelta
 
->>> now = DateTime.now()
+>>> high_noon = datetime(
+...   year=1952,
+...   month=7,
+...   day=24,
+...   hour=12,
+...   minute=0,
+...   second=30,
+...   microsecond=0,
+... )
 
->>> print(now)
-2018-05-06 19:53:14.170736
+>>> print(high_noon)
+1952-07-24 12:00:30
 
->>> increment = TimeDelta(frac_seconds=135, frac_seconds_exponent=-13)
+>>> hesitation = timedelta(microseconds=10, femtoseconds=203456)
 
->>> print(increment)
-0:00:00+135e-13
+>>> print(hesitation)
+0:00:00.000010000203456
 
->>> later = now + increment
+>>> reaction = high_noon + hesitation
 
->>> print(later)
-2018-05-06 19:53:14+1707360000135e-13
+>>> print(reaction)
+1952-07-24 12:00:30.000010000203456
 
->>> later += increment
-
->>> print(later)
-2018-05-06 19:53:14+1707360000270e-13
-
->>> print(later + now)
+>>> print(high_noon + high_noon)
 Traceback (most recent call last):
   File "<stdin>", line 1, in <module>
-TypeError: unsupported operand type(s) for +: 'DateTime' and 'DateTime'
+TypeError: unsupported operand type(s) for +: 'datetime' and 'datetime'
 
->>> print(later - now)
-0:00:00+270e-13
+>>> print(hesitation * 2)
+0:00:00.000020000406912
 
->>> print(increment * 2)
-0:00:00+270e-13
-
->>> later += timedelta(microseconds=3)
-
->>> print(later)
-2018-05-06 19:53:14+1707390000270e-13
-
->>> later += TimeDelta(frac_seconds=2, frac_seconds_exponent=SITimeUnit.ATTOSECONDS)
-
->>> print(later)
-2018-05-06 19:53:14+170739000027000002e-18
-
->>> print(later - now)
-0:00:00+3000027000002e-18
 ```
 
-See the [readthedocs page](http://hightime.readthedocs.io/en/latest/) for more detailed examples and documentation.
+See the [readthedocs page](http://hightime.readthedocs.io/en/latest/) for more detailed
+examples and documentation.
 
-License
--------
+## License
+
 Hightime is licensed under an MIT-style license.
 
 See [LICENSE](https://github.com/ni/hightime/blob/master/LICENSE)
