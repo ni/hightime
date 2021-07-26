@@ -26,7 +26,7 @@ def _checkArg(name, value):
                 )
 
     if not 0 <= value <= 999999999:
-        raise ValueError("{} must be in 0..999".format(name), value)
+        raise ValueError("{} must be in 0..999999999".format(name), value)
 
     return value
 
