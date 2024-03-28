@@ -18,7 +18,6 @@ Please note that due to floating point arithmetic inaccuracies, the ability to s
 sub-microsecond values in terms of much larger units (weeks, days, seconds) has been
 limited. For the exact limitation, please consult the various methods.
 """
-
 import datetime as _std_datetime
 
 
