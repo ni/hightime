@@ -135,6 +135,29 @@ def test_timedelta_total_seconds(td, expected):
 
 
 @pytest.mark.parametrize(
+    "td, expected",
+    [
+        (timedelta(d=1), 86400.0),
+        (timedelta(d=2), 172800.0),
+        (timedelta(s=1), 1.0),
+        (timedelta(s=2), 2.0),
+        (timedelta(us=1), 0.000001),
+        (timedelta(us=2), 0.000002),
+        (timedelta(fs=1), 1e-15),
+        (timedelta(fs=2), 2e-15),
+        (timedelta(ys=1), 1e-24),
+        (timedelta(ys=2), 2e-24),
+        (
+            timedelta(d=1, s=2, us=3, fs=4, ys=5),
+            86402.000003000000004000000005,
+        ),
+    ],
+)
+def test_timedelta_precision_total_seconds(td, expected):
+    assert float(td.precision_total_seconds()) == expected
+
+
+@pytest.mark.parametrize(
     "td, middle_part",
     [
         (timedelta(d=1), "days=1"),
