@@ -2,15 +2,15 @@ import datetime as std_datetime
 from decimal import Decimal
 from fractions import Fraction
 
-_YS_PER_S = 10**24
-_YS_PER_US = 10**18
-_YS_PER_FS = 10**9
+_YS_PER_S = 10 ** 24
+_YS_PER_US = 10 ** 18
+_YS_PER_FS = 10 ** 9
 _YS_PER_DAY = 60 * 60 * 24 * _YS_PER_S
 
 _US_PER_DAY = 24 * 60 * 60 * 1000 * 1000
 _US_PER_WEEK = 7 * _US_PER_DAY
-_NS_PER_HOUR = 60 * 60 * (10**9)
-_PS_PER_MINUTE = 60 * (10**12)
+_NS_PER_HOUR = 60 * 60 * (10 ** 9)
+_PS_PER_MINUTE = 60 * (10 ** 12)
 
 _FIELD_NAMES = [
     "days",
@@ -103,10 +103,7 @@ class timedelta(std_datetime.timedelta):
         femtoseconds, yoctoseconds = divmod(yoctoseconds, _YS_PER_FS)
 
         self = super().__new__(
-            cls,
-            days=days,
-            seconds=seconds,
-            microseconds=microseconds,
+            cls, days=days, seconds=seconds, microseconds=microseconds,
         )
 
         self._femtoseconds = femtoseconds
@@ -136,9 +133,9 @@ class timedelta(std_datetime.timedelta):
         return (
             (self.days * 86400)
             + self.seconds
-            + (self.microseconds / 10**6)
-            + (self.femtoseconds / 10**15)
-            + (self.yoctoseconds / 10**24)
+            + (self.microseconds / 10 ** 6)
+            + (self.femtoseconds / 10 ** 15)
+            + (self.yoctoseconds / 10 ** 24)
         )
 
     def precision_total_seconds(self):
