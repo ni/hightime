@@ -79,8 +79,14 @@ from .shorthands import timedelta
         (timedelta(d=7, w=2), timedelta(d=21)),
         (timedelta(d=1.5, w=2, h=7), timedelta(d=15, s=68400)),
         (timedelta(d=1.5, w=2, h=7, m=4), timedelta(d=15, s=68640)),
-        (timedelta(d=1.5, s=15, w=2, h=7, m=4), timedelta(d=15, s=68655),),
-        (timedelta(d=1.5, s=15, w=2.8, h=7.9, m=4.3), timedelta(d=21, s=37353),),
+        (
+            timedelta(d=1.5, s=15, w=2, h=7, m=4),
+            timedelta(d=15, s=68655),
+        ),
+        (
+            timedelta(d=1.5, s=15, w=2.8, h=7.9, m=4.3),
+            timedelta(d=21, s=37353),
+        ),
         (timedelta(m=0.3), timedelta(s=18)),
         (timedelta(s=0.3), timedelta(ms=300)),
         (timedelta(s=0.003), timedelta(us=3000)),
@@ -118,7 +124,10 @@ def test_timedelta_properties():
         (timedelta(fs=2), 2e-15),
         (timedelta(ys=1), 1e-24),
         (timedelta(ys=2), 2e-24),
-        (timedelta(d=1, s=2, us=3, fs=4, ys=5), 86402.000003000000004000000005,),
+        (
+            timedelta(d=1, s=2, us=3, fs=4, ys=5),
+            86402.000003000000004000000005,
+        ),
     ],
 )
 def test_timedelta_total_seconds(td, expected):
@@ -156,9 +165,18 @@ def test_timedelta_repr(td, middle_part):
         (timedelta(d=1, s=2), "1 day, 0:00:02"),
         (timedelta(d=1, s=2, us=3), "1 day, 0:00:02.000003"),
         (timedelta(d=1, s=2, us=30), "1 day, 0:00:02.000030"),
-        (timedelta(d=1, s=2, us=3, fs=4), "1 day, 0:00:02.000003000000004",),
-        (timedelta(d=1, s=2, us=3, fs=40), "1 day, 0:00:02.000003000000040",),
-        (timedelta(d=1, s=2, us=0, fs=40), "1 day, 0:00:02.000000000000040",),
+        (
+            timedelta(d=1, s=2, us=3, fs=4),
+            "1 day, 0:00:02.000003000000004",
+        ),
+        (
+            timedelta(d=1, s=2, us=3, fs=40),
+            "1 day, 0:00:02.000003000000040",
+        ),
+        (
+            timedelta(d=1, s=2, us=0, fs=40),
+            "1 day, 0:00:02.000000000000040",
+        ),
         (
             timedelta(d=1, s=2, us=3, fs=4, ys=5),
             "1 day, 0:00:02.000003000000004000000005",
@@ -189,15 +207,40 @@ def test_timedelta_str(td, expected):
     "left, right, eq, lt",
     [
         (timedelta(d=1), timedelta(d=1), True, False),
-        (timedelta(d=1, ys=1), timedelta(d=1, ys=1), True, False,),
+        (
+            timedelta(d=1, ys=1),
+            timedelta(d=1, ys=1),
+            True,
+            False,
+        ),
         (timedelta(d=1), timedelta(d=-1), False, False),
         (timedelta(d=1), timedelta(d=-1), False, False),
         (timedelta(d=1), timedelta(s=1), False, False),
-        (timedelta(2, 3, 4, fs=5, ys=6), timedelta(3, 3, 3, fs=3, ys=3), False, True,),
-        (timedelta(2, 3, 4, fs=5, ys=6), timedelta(2, 3, 4, fs=5, ys=7), False, True,),
-        (timedelta(2, 3, 4, fs=5, ys=6), timedelta(2, 3, 4, fs=6, ys=6), False, True,),
+        (
+            timedelta(2, 3, 4, fs=5, ys=6),
+            timedelta(3, 3, 3, fs=3, ys=3),
+            False,
+            True,
+        ),
+        (
+            timedelta(2, 3, 4, fs=5, ys=6),
+            timedelta(2, 3, 4, fs=5, ys=7),
+            False,
+            True,
+        ),
+        (
+            timedelta(2, 3, 4, fs=5, ys=6),
+            timedelta(2, 3, 4, fs=6, ys=6),
+            False,
+            True,
+        ),
         (timedelta(2, 3), timedelta(2, 3, 5), False, True),
-        (timedelta(2, 3, 4, ys=1), datetime.timedelta(2, 3, 4), False, False,),
+        (
+            timedelta(2, 3, 4, ys=1),
+            datetime.timedelta(2, 3, 4),
+            False,
+            False,
+        ),
     ],
 )
 def test_timedelta_comparison(left, right, eq, lt):
@@ -221,10 +264,12 @@ def test_timedelta_comparison(left, right, eq, lt):
 
 
 @pytest.mark.parametrize(
-    "td", [timedelta(), timedelta(d=1)],
+    "td",
+    [timedelta(), timedelta(d=1)],
 )
 @pytest.mark.parametrize(
-    "other", [False, True, 0, 1, (0, 0, 0, 0, 0), (1, 0, 0, 0, 0), "", [], ()],
+    "other",
+    [False, True, 0, 1, (0, 0, 0, 0, 0), (1, 0, 0, 0, 0), "", [], ()],
 )
 def test_timedelta_comparison_unrelated_type(td, other):
     assert not (td == other)
@@ -413,7 +458,8 @@ def test_timedelta_floordiv(left, right, expected):
 
     assert result == expected
     assert isinstance(
-        result, int if isinstance(right, datetime.timedelta) else hightime.timedelta,
+        result,
+        int if isinstance(right, datetime.timedelta) else hightime.timedelta,
     )
 
 
@@ -447,7 +493,11 @@ def test_timedelta_floordiv_dividebyzero():
         (timedelta(s=1), datetime.timedelta(microseconds=1), 1000000),
         (timedelta(fs=1), datetime.timedelta(microseconds=1), 0.000000001),
         # Some special values: https://bugs.python.org/issue23521
-        (timedelta(s=1), 1 / 0.6112295, timedelta(us=611229, fs=500000000),),
+        (
+            timedelta(s=1),
+            1 / 0.6112295,
+            timedelta(us=611229, fs=500000000),
+        ),
         # @TODO: Test boundary values
     ],
 )
