@@ -327,6 +327,12 @@ def test_datetime_add(left, right, expected):
             datetime(1970, 1, 1, 0, 0, 0),
             timedelta(days=50 * 365.24, yoctoseconds=1),
         ),
+        (
+            datetime(1850, 1, 1, femtosecond=1),
+            datetime(1970, 1, 1, 0, 0, 0),
+            # -(120 * 365.24) = -43828.8 = -43829
+            timedelta(days=-43829, femtoseconds=1),
+        ),
     ],
 )
 def test_datetime_sub(left, right, expected):
@@ -512,6 +518,11 @@ def test_datetime_timestamp(dt, expected):
             datetime(2020, 1, 1, yoctosecond=1),
             datetime(1970, 1, 1),
             Decimal("1577836800.000000000000000000000001"),
+        ),
+        (
+            datetime(1850, 1, 1, femtosecond=1),
+            datetime(1970, 1, 1),
+            Decimal("-3786825599.999999999999999"),
         ),
     ],
 )
