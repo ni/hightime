@@ -287,6 +287,11 @@ def test_datetime_comparison_tzinfo_mismatch():
             timedelta(w=2, d=4, s=44, ys=1),
             datetime(2020, 5, 9, 0, 30, 18, ys=1, tzinfo=tzinfo(hours=0)),
         ),
+        (
+            datetime(1850, 1, 1),
+            timedelta(d=43829, fs=1),
+            datetime(1970, 1, 1, 0, 0, 0, fs=1),
+        ),
     ],
 )
 def test_datetime_add(left, right, expected):
