@@ -1,4 +1,6 @@
 import datetime as std_datetime
+import decimal
+from decimal import Decimal
 from fractions import Fraction
 
 _YS_PER_S = 10**24
@@ -139,6 +141,21 @@ class timedelta(std_datetime.timedelta):
             + (self.femtoseconds / 10**15)
             + (self.yoctoseconds / 10**24)
         )
+
+    def precision_total_seconds(self):
+        """Precise total seconds in the duration.
+
+        Note: up to 64 significant digits are used in computation.
+        """
+        with decimal.localcontext() as ctx:
+            ctx.prec = 64
+            return Decimal(
+                (self.days * 86400)
+                + self.seconds
+                + Decimal(self.microseconds) / Decimal(10**6)
+                + Decimal(self.femtoseconds) / Decimal(10**15)
+                + Decimal(self.yoctoseconds) / Decimal(10**24)
+            )
 
     # String operators
 

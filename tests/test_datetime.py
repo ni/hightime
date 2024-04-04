@@ -1,4 +1,5 @@
 import datetime as std_datetime
+from decimal import Decimal
 import sys
 
 import hightime
@@ -286,6 +287,11 @@ def test_datetime_comparison_tzinfo_mismatch():
             timedelta(w=2, d=4, s=44, ys=1),
             datetime(2020, 5, 9, 0, 30, 18, ys=1, tzinfo=tzinfo(hours=0)),
         ),
+        (
+            datetime(1850, 1, 1),
+            timedelta(d=43829, fs=1),
+            datetime(1970, 1, 1, 0, 0, 0, fs=1),
+        ),
     ],
 )
 def test_datetime_add(left, right, expected):
@@ -315,6 +321,22 @@ def test_datetime_add(left, right, expected):
             datetime(2020, 4, 21, 0, 29, 34, ys=1, tzinfo=tzinfo(hours=0)),
             datetime(2020, 4, 21, 1, 29, 34, tzinfo=tzinfo(hours=1)),
             timedelta(ys=1),
+        ),
+        (
+            datetime(2020, 1, 1, femtosecond=20),
+            datetime(1970, 1, 1, 0, 0, 0),
+            timedelta(days=50 * 365.24, femtoseconds=20),
+        ),
+        (
+            datetime(2020, 1, 1, yoctosecond=1),
+            datetime(1970, 1, 1, 0, 0, 0),
+            timedelta(days=50 * 365.24, yoctoseconds=1),
+        ),
+        (
+            datetime(1850, 1, 1, femtosecond=1),
+            datetime(1970, 1, 1, 0, 0, 0),
+            # -(120 * 365.24) = -43828.8 = -43829
+            timedelta(days=-43829, femtoseconds=1),
         ),
     ],
 )
@@ -482,3 +504,34 @@ def test_datetime_replace():
 )
 def test_datetime_timestamp(dt, expected):
     assert dt.timestamp() == expected
+
+
+@pytest.mark.parametrize(
+    "left, right, expected",
+    [
+        (
+            datetime(2020, 4, 21, 15, 29, 34),
+            datetime(2020, 4, 21, 15, 29, 34),
+            Decimal("0"),
+        ),
+        (
+            datetime(2020, 1, 1, femtosecond=1),
+            datetime(1970, 1, 1),
+            Decimal("1577836800.000000000000001"),
+        ),
+        (
+            datetime(2020, 1, 1, yoctosecond=1),
+            datetime(1970, 1, 1),
+            Decimal("1577836800.000000000000000000000001"),
+        ),
+        (
+            datetime(1850, 1, 1, femtosecond=1),
+            datetime(1970, 1, 1),
+            Decimal("-3786825599.999999999999999"),
+        ),
+    ],
+)
+def test_datetime_sub_total_seconds_precision(left, right, expected):
+    result = left - right
+    assert result.precision_total_seconds() == expected
+    assert isinstance(result, hightime.timedelta)
