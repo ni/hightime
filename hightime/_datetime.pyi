@@ -1,5 +1,5 @@
 import datetime as std_datetime
-from typing import Optional, SupportsIndex, overload
+from typing import Any, Optional, SupportsIndex, overload
 
 import hightime
 
@@ -24,7 +24,7 @@ class datetime(std_datetime.datetime):
         second: SupportsIndex,
         microsecond: SupportsIndex,
         tzinfo: Optional[std_datetime._TzInfo],
-        **kwargs,
+        **kwargs: Any,
     ) -> datetime: ...
     @overload
     @staticmethod
@@ -40,7 +40,7 @@ class datetime(std_datetime.datetime):
         femtosecond: SupportsIndex = ...,
         yoctosecond: SupportsIndex = ...,
         tzinfo: Optional[std_datetime._TzInfo] = ...,
-        **kwargs,
+        **kwargs: Any,
     ) -> datetime: ...
     @classmethod
     def __new__impl__(
@@ -55,7 +55,7 @@ class datetime(std_datetime.datetime):
         femtosecond: SupportsIndex = ...,
         yoctosecond: SupportsIndex = ...,
         tzinfo: Optional[std_datetime._TzInfo] = ...,
-        **kwargs,
+        **kwargs: Any,
     ) -> datetime: ...
     def __repr__(self) -> str: ...
     @overload  # type: ignore[override]
@@ -85,7 +85,7 @@ class datetime(std_datetime.datetime):
         femtosecond: SupportsIndex = ...,
         yoctosecond: SupportsIndex = ...,
         tzinfo: Optional[std_datetime._TzInfo] = ...,
-        **kwargs,
+        **kwargs: Any,
     ) -> datetime: ...
     @classmethod
     def utcfromtimestamp(cls, t: float, /) -> datetime: ...

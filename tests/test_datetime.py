@@ -37,7 +37,7 @@ class IntLike(object):
         return self.value
 
 
-def tzinfo(*, hours):
+def tzinfo(*, hours: int) -> std_datetime.timezone:
     return std_datetime.timezone(std_datetime.timedelta(hours=hours))
 
 

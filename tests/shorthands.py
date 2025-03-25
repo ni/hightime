@@ -1,3 +1,5 @@
+from typing import Any, Dict
+
 import hightime
 
 _UNIT_SHORTHANDS = {
@@ -20,7 +22,7 @@ _UNIT_SHORTHANDS = {
 }
 
 
-def _replace(kwargs, *, plural):
+def _replace(kwargs: Dict[str, Any], *, plural: bool):
     for shorthand, longhand in _UNIT_SHORTHANDS.items():
         if shorthand in kwargs:
             kwargs[longhand + ("s" if plural else "")] = kwargs.pop(shorthand)
@@ -28,7 +30,7 @@ def _replace(kwargs, *, plural):
     return kwargs
 
 
-def datetime(*args, **kwargs) -> hightime.datetime:
+def datetime(*args: Any, **kwargs: Any) -> hightime.datetime:
     """Instantiate a hightime.datetime with some shorthands.
 
     Allows unit shorthand kwargs as well as passing year/month/day if none are provided
@@ -44,7 +46,7 @@ def datetime(*args, **kwargs) -> hightime.datetime:
     return hightime.datetime(*args, **kwargs)
 
 
-def timedelta(*args, **kwargs) -> hightime.timedelta:
+def timedelta(*args: Any, **kwargs: Any) -> hightime.timedelta:
     """Instantiate a hightime.timedelta, allowing unit shorthand kwargs"""
 
     _replace(kwargs, plural=True)
