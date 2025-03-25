@@ -46,7 +46,9 @@ def test_datetime_isinstance() -> None:
 
 
 @pytest.mark.parametrize("argname", _ALL_FIELDS)
-@pytest.mark.parametrize("argvalue", ["1", 4.5, IntLike("1"), IntLike(4.5)])  # type: ignore[arg-type]
+@pytest.mark.parametrize(
+    "argvalue", ["1", 4.5, IntLike("1"), IntLike(4.5)]  # type: ignore[arg-type]
+)
 def test_datetime_arg_wrong_type(
     argname: str, argvalue: Union[float, int, SupportsInt]
 ) -> None:
