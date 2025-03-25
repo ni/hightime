@@ -12,8 +12,36 @@ class datetime(std_datetime.datetime):
     def __le__(self, other: std_datetime.date, /) -> bool: ...
     def __lt__(self, other: std_datetime.date, /) -> bool: ...
     def __ne__(self, other: object, /) -> bool: ...
+    @overload
     @staticmethod
-    def __new__(cls, *args, **kwargs) -> datetime: ...
+    def __new__(
+        cls,
+        year: SupportsIndex,
+        month: SupportsIndex,
+        day: SupportsIndex,
+        hour: SupportsIndex,
+        minute: SupportsIndex,
+        second: SupportsIndex,
+        microsecond: SupportsIndex,
+        tzinfo: Optional[std_datetime._TzInfo],
+        **kwargs,
+    ) -> datetime: ...
+    @overload
+    @staticmethod
+    def __new__(
+        cls,
+        year: SupportsIndex,
+        month: SupportsIndex,
+        day: SupportsIndex,
+        hour: SupportsIndex = ...,
+        minute: SupportsIndex = ...,
+        second: SupportsIndex = ...,
+        microsecond: SupportsIndex = ...,
+        femtosecond: SupportsIndex = ...,
+        yoctosecond: SupportsIndex = ...,
+        tzinfo: Optional[std_datetime._TzInfo] = ...,
+        **kwargs,
+    ) -> datetime: ...
     @classmethod
     def __new__impl__(
         cls,
