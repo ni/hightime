@@ -1,4 +1,5 @@
 import datetime as datetime
+from typing import Any, Union
 
 import hightime
 
@@ -99,11 +100,13 @@ from .shorthands import timedelta
         (timedelta(s=0.123456), timedelta(us=123456)),
     ],
 )
-def test_timedelta_constuctor(left, right):
+def test_timedelta_constuctor(
+    left: hightime.timedelta, right: hightime.timedelta
+) -> None:
     assert left == right
 
 
-def test_timedelta_properties():
+def test_timedelta_properties() -> None:
     assert 99 == timedelta(d=99).days
     assert 99 == timedelta(s=99).seconds
     assert 99 == timedelta(us=99).microseconds
@@ -130,7 +133,7 @@ def test_timedelta_properties():
         ),
     ],
 )
-def test_timedelta_total_seconds(td, expected):
+def test_timedelta_total_seconds(td: hightime.timedelta, expected: float) -> None:
     assert td.total_seconds() == expected
 
 
@@ -153,7 +156,9 @@ def test_timedelta_total_seconds(td, expected):
         ),
     ],
 )
-def test_timedelta_precision_total_seconds(td, expected):
+def test_timedelta_precision_total_seconds(
+    td: hightime.timedelta, expected: float
+) -> None:
     assert float(td.precision_total_seconds()) == expected
 
 
@@ -175,7 +180,7 @@ def test_timedelta_precision_total_seconds(td, expected):
         (timedelta(d=1, s=0, us=3, ys=5), "days=1, microseconds=3, yoctoseconds=5"),
     ],
 )
-def test_timedelta_repr(td, middle_part):
+def test_timedelta_repr(td: hightime.timedelta, middle_part: str) -> None:
     assert repr(td) == "hightime.timedelta({})".format(middle_part)
     assert td == eval(repr(td))
 
@@ -222,7 +227,7 @@ def test_timedelta_repr(td, middle_part):
         ),
     ],
 )
-def test_timedelta_str(td, expected):
+def test_timedelta_str(td: hightime.timedelta, expected: str) -> None:
     assert str(td) == expected
 
 
@@ -266,7 +271,9 @@ def test_timedelta_str(td, expected):
         ),
     ],
 )
-def test_timedelta_comparison(left, right, eq, lt):
+def test_timedelta_comparison(
+    left: hightime.timedelta, right: hightime.timedelta, eq: bool, lt: bool
+) -> None:
     assert (left == right) == eq
     assert (right == left) == eq
 
@@ -294,7 +301,9 @@ def test_timedelta_comparison(left, right, eq, lt):
     "other",
     [False, True, 0, 1, (0, 0, 0, 0, 0), (1, 0, 0, 0, 0), "", [], ()],
 )
-def test_timedelta_comparison_unrelated_type(td, other):
+def test_timedelta_comparison_unrelated_type(
+    td: hightime.timedelta, other: Any
+) -> None:
     assert not (td == other)
     assert not (other == td)
     assert td != other
@@ -321,7 +330,7 @@ def test_timedelta_comparison_unrelated_type(td, other):
         assert other >= td
 
 
-def test_timedelta_bool():
+def test_timedelta_bool() -> None:
     assert not timedelta()
     assert timedelta(d=1)
     assert timedelta(s=1)
@@ -353,7 +362,9 @@ def test_timedelta_bool():
         # @TODO: Test boundary values
     ],
 )
-def test_timedelta_add(left, right, expected):
+def test_timedelta_add(
+    left: hightime.timedelta, right: hightime.timedelta, expected: hightime.timedelta
+) -> None:
     result = left + right
     assert left + right == expected
     assert isinstance(result, hightime.timedelta)
@@ -363,12 +374,12 @@ def test_timedelta_add(left, right, expected):
     assert isinstance(result, hightime.timedelta)
 
 
-def test_timedelta_add_integrals():
+def test_timedelta_add_integrals() -> None:
     for val in 1, 1.0:
         with pytest.raises(TypeError):
-            timedelta(fs=1) + val
+            timedelta(fs=1) + val  # type: ignore[operator]
         with pytest.raises(TypeError):
-            val + timedelta(fs=1)
+            val + timedelta(fs=1)  # type: ignore[operator]
 
 
 @pytest.mark.parametrize(
@@ -397,7 +408,9 @@ def test_timedelta_add_integrals():
         # @TODO: Test boundary values
     ],
 )
-def test_timedelta_sub(left, right, expected):
+def test_timedelta_sub(
+    left: hightime.timedelta, right: hightime.timedelta, expected: hightime.timedelta
+) -> None:
     result = left - right
 
     assert result == expected
@@ -405,12 +418,12 @@ def test_timedelta_sub(left, right, expected):
     # Not commutative
 
 
-def test_timedelta_sub_integrals():
+def test_timedelta_sub_integrals() -> None:
     for val in 1, 1.0:
         with pytest.raises(TypeError):
-            timedelta(fs=1) - val
+            timedelta(fs=1) - val  # type: ignore[operator]
         with pytest.raises(TypeError):
-            val - timedelta(fs=1)
+            val - timedelta(fs=1)  # type: ignore[operator]
 
 
 @pytest.mark.parametrize(
@@ -436,7 +449,9 @@ def test_timedelta_sub_integrals():
         # @TODO: Test boundary values
     ],
 )
-def test_timedelta_mul(left, right, expected):
+def test_timedelta_mul(
+    left: hightime.timedelta, right: float, expected: hightime.timedelta
+) -> None:
     def test(left, right, expected):
         result = left * right
         assert result == expected
@@ -451,7 +466,7 @@ def test_timedelta_mul(left, right, expected):
         test(left, float(right), expected)
 
 
-def test_timedelta_mul_nan():
+def test_timedelta_mul_nan() -> None:
     with pytest.raises(ValueError):
         timedelta(fs=1) * float("nan")
 
@@ -476,7 +491,14 @@ def test_timedelta_mul_nan():
         # @TODO: Test boundary values
     ],
 )
-def test_timedelta_floordiv(left, right, expected):
+def test_timedelta_floordiv(
+    left: hightime.timedelta,
+    right: Union[int, hightime.timedelta],
+    expected: Union[hightime.timedelta, int],
+) -> None:
+    assert (isinstance(right, int) and isinstance(expected, hightime.timedelta)) or (
+        isinstance(right, datetime.timedelta) and isinstance(expected, int)
+    )
     result = left // right
 
     assert result == expected
@@ -486,17 +508,17 @@ def test_timedelta_floordiv(left, right, expected):
     )
 
 
-def test_timedelta_floordiv_unrelated_type():
+def test_timedelta_floordiv_unrelated_type() -> None:
     with pytest.raises(TypeError):
-        0 // timedelta(fs=1)
+        0 // timedelta(fs=1)  # type: ignore[operator]
 
     with pytest.raises(TypeError):
-        timedelta(fs=1) // 1.0
+        timedelta(fs=1) // 1.0  # type: ignore[operator]
 
 
-def test_timedelta_floordiv_dividebyzero():
+def test_timedelta_floordiv_dividebyzero() -> None:
     with pytest.raises(ZeroDivisionError):
-        timedelta(fs=1) // 0
+        timedelta(fs=1) // 0  # type: ignore[operator]
 
 
 @pytest.mark.parametrize(
@@ -524,7 +546,11 @@ def test_timedelta_floordiv_dividebyzero():
         # @TODO: Test boundary values
     ],
 )
-def test_timedelta_truediv(left, right, expected):
+def test_timedelta_truediv(
+    left: hightime.timedelta,
+    right: Union[float, datetime.timedelta],
+    expected: Union[float, hightime.timedelta],
+) -> None:
     def test(left, right, expected):
         result = left / right
         assert result == expected
@@ -535,12 +561,12 @@ def test_timedelta_truediv(left, right, expected):
         test(left, float(right), expected)
 
 
-def test_timedelta_truediv_unrelated_type():
+def test_timedelta_truediv_unrelated_type() -> None:
     with pytest.raises(TypeError):
-        0 / timedelta(fs=1)
+        0 / timedelta(fs=1)  # type: ignore[operator]
 
 
-def test_timedelta_truediv_dividebyzero():
+def test_timedelta_truediv_dividebyzero() -> None:
     with pytest.raises(ZeroDivisionError):
         timedelta(fs=1) / 0
 
@@ -564,13 +590,15 @@ def test_timedelta_truediv_dividebyzero():
         # @TODO: Test boundary values
     ],
 )
-def test_timedelta_mod(left, right, expected):
+def test_timedelta_mod(
+    left: hightime.timedelta, right: hightime.timedelta, expected: hightime.timedelta
+) -> None:
     result = left % right
     assert result == expected
     assert isinstance(result, hightime.timedelta)
 
 
-def test_timedelta_mod_dividebyzero():
+def test_timedelta_mod_dividebyzero() -> None:
     with pytest.raises(ZeroDivisionError):
         timedelta(fs=1) % timedelta()
 
@@ -592,7 +620,12 @@ def test_timedelta_mod_dividebyzero():
         # @TODO: Test boundary values
     ],
 )
-def test_timedelta_divmod(left, right, expected_q, expected_r):
+def test_timedelta_divmod(
+    left: hightime.timedelta,
+    right: hightime.timedelta,
+    expected_q: int,
+    expected_r: hightime.timedelta,
+) -> None:
     result_q, result_r = divmod(left, right)
     assert result_q == expected_q
     assert result_r == expected_r
@@ -600,17 +633,17 @@ def test_timedelta_divmod(left, right, expected_q, expected_r):
     assert isinstance(result_r, hightime.timedelta)
 
 
-def test_timedelta_divmod_unrelated_type():
+def test_timedelta_divmod_unrelated_type() -> None:
     with pytest.raises(TypeError):
-        divmod(timedelta(fs=1), 10)
+        divmod(timedelta(fs=1), 10)  # type: ignore[operator]
 
 
-def test_timedelta_divmod_dividebyzero():
+def test_timedelta_divmod_dividebyzero() -> None:
     with pytest.raises(ZeroDivisionError):
         divmod(timedelta(fs=1), timedelta())
 
 
-def test_stddatetime_leftside_arithmetic():
+def test_stddatetime_leftside_arithmetic() -> None:
     with pytest.raises(ZeroDivisionError):
         datetime.timedelta(microseconds=1) // timedelta(ys=3)
 
@@ -621,7 +654,7 @@ def test_stddatetime_leftside_arithmetic():
         datetime.timedelta(microseconds=1) % timedelta(ys=3)
 
 
-def test_timedelta_unary_arithmetic():
+def test_timedelta_unary_arithmetic() -> None:
     td = timedelta(fs=1)
 
     assert +td == timedelta(fs=1)
@@ -631,13 +664,13 @@ def test_timedelta_unary_arithmetic():
     assert isinstance(-td, hightime.timedelta)
 
 
-def test_timedelta_abs():
+def test_timedelta_abs() -> None:
     assert abs(timedelta(fs=1)) == timedelta(fs=1)
     assert abs(timedelta(fs=-1)) == timedelta(fs=1)
     assert isinstance(abs(timedelta(fs=1)), hightime.timedelta)
 
 
-def test_timedelta_resolution():
+def test_timedelta_resolution() -> None:
     assert isinstance(hightime.timedelta.min, hightime.timedelta)
     assert isinstance(hightime.timedelta.max, hightime.timedelta)
     assert isinstance(hightime.timedelta.resolution, hightime.timedelta)
@@ -649,7 +682,7 @@ def test_timedelta_resolution():
     assert hightime.timedelta.resolution == timedelta(ys=1)
 
 
-def test_timedelta_hash():
+def test_timedelta_hash() -> None:
     assert hash(timedelta()) == hash(timedelta())
     assert hash(timedelta(fs=1)) == hash(timedelta(fs=1))
     assert hash(timedelta(fs=1)) != hash(timedelta(ys=1))

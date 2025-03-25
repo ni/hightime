@@ -28,7 +28,7 @@ def _replace(kwargs, *, plural):
     return kwargs
 
 
-def datetime(*args, **kwargs):
+def datetime(*args, **kwargs) -> hightime.datetime:
     """Instantiate a hightime.datetime with some shorthands.
 
     Allows unit shorthand kwargs as well as passing year/month/day if none are provided
@@ -44,7 +44,7 @@ def datetime(*args, **kwargs):
     return hightime.datetime(*args, **kwargs)
 
 
-def timedelta(*args, **kwargs):
+def timedelta(*args, **kwargs) -> hightime.timedelta:
     """Instantiate a hightime.timedelta, allowing unit shorthand kwargs"""
 
     _replace(kwargs, plural=True)
