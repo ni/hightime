@@ -14,7 +14,7 @@ def _checkArg(name, value):
         if isinstance(value, float):
             raise TypeError("integer argument expected, got float")
         try:
-            value = value.__int__()
+            value = value.__index__()
         except AttributeError:
             raise TypeError(
                 "an integer is required (got type %s)" % type(value).__name__
@@ -22,7 +22,7 @@ def _checkArg(name, value):
         else:
             if not isinstance(value, int):
                 raise TypeError(
-                    "__int__ returned non-int (type %s)" % type(value).__name__
+                    "__index__ returned non-int (type %s)" % type(value).__name__
                 )
 
     if not 0 <= value <= 999999999:
