@@ -32,7 +32,7 @@ class IntLike(object):
     def __init__(self, value=1):
         self.value = value
 
-    def __int__(self):
+    def __index__(self):
         return self.value
 
 
