@@ -1,5 +1,5 @@
 import datetime as std_datetime
-from typing import Any, Optional, SupportsIndex, overload
+from typing import Any, ClassVar, Optional, SupportsIndex, overload
 
 import hightime
 
@@ -73,6 +73,8 @@ class datetime(std_datetime.datetime):
         cls, t: float, tz: Optional[std_datetime._TzInfo] = ...
     ) -> datetime: ...
     def isoformat(self, sep: str = ..., timespec: str = ...) -> str: ...
+    max: ClassVar[datetime]
+    min: ClassVar[datetime]
     def replace(  # type: ignore[override]
         self,
         year: SupportsIndex = ...,
@@ -87,6 +89,7 @@ class datetime(std_datetime.datetime):
         tzinfo: Optional[std_datetime._TzInfo] = ...,
         **kwargs: Any,
     ) -> datetime: ...
+    resolution: ClassVar[hightime.timedelta]
     @classmethod
     def utcfromtimestamp(cls, t: float, /) -> datetime: ...
     @property
