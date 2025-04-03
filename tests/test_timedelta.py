@@ -1,5 +1,7 @@
+from __future__ import annotations
+
 import datetime as datetime
-from typing import Any, Union
+from typing import Any
 
 import hightime
 
@@ -452,7 +454,10 @@ def test_timedelta_sub_integrals() -> None:
 def test_timedelta_mul(
     left: hightime.timedelta, right: float, expected: hightime.timedelta
 ) -> None:
-    def test(left, right, expected):
+    def test(
+        left: hightime.timedelta, right: float, expected: hightime.timedelta
+    ) -> None:
+        result: hightime.timedelta | datetime.timedelta
         result = left * right
         assert result == expected
         assert isinstance(result, hightime.timedelta)
@@ -493,8 +498,8 @@ def test_timedelta_mul_nan() -> None:
 )
 def test_timedelta_floordiv(
     left: hightime.timedelta,
-    right: Union[int, hightime.timedelta],
-    expected: Union[hightime.timedelta, int],
+    right: int | hightime.timedelta,
+    expected: hightime.timedelta | int,
 ) -> None:
     assert (isinstance(right, int) and isinstance(expected, hightime.timedelta)) or (
         isinstance(right, datetime.timedelta) and isinstance(expected, int)
@@ -548,10 +553,14 @@ def test_timedelta_floordiv_dividebyzero() -> None:
 )
 def test_timedelta_truediv(
     left: hightime.timedelta,
-    right: Union[float, datetime.timedelta],
-    expected: Union[float, hightime.timedelta],
+    right: float | datetime.timedelta,
+    expected: float | hightime.timedelta,
 ) -> None:
-    def test(left, right, expected):
+    def test(
+        left: hightime.timedelta,
+        right: float | datetime.timedelta,
+        expected: float | hightime.timedelta,
+    ) -> None:
         result = left / right
         assert result == expected
         assert isinstance(result, (hightime.timedelta, int, float))

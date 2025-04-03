@@ -1,7 +1,9 @@
+from __future__ import annotations
+
 import datetime as std_datetime
 from decimal import Decimal
 import sys
-from typing import SupportsInt, Type, Union
+from typing import SupportsIndex, Type
 
 import hightime
 
@@ -50,7 +52,7 @@ def test_datetime_isinstance() -> None:
     "argvalue", ["1", 4.5, IntLike("1"), IntLike(4.5)]  # type: ignore[arg-type]
 )
 def test_datetime_arg_wrong_type(
-    argname: str, argvalue: Union[float, int, SupportsInt]
+    argname: str, argvalue: float | int | SupportsIndex
 ) -> None:
     with pytest.raises(TypeError):
         datetime(**{argname: argvalue})

@@ -1,4 +1,4 @@
-from typing import Any, Dict
+from typing import Any
 
 import hightime
 
@@ -22,7 +22,7 @@ _UNIT_SHORTHANDS = {
 }
 
 
-def _replace(kwargs: Dict[str, Any], *, plural: bool):
+def _replace(kwargs: dict[str, Any], *, plural: bool) -> dict[str, Any]:
     for shorthand, longhand in _UNIT_SHORTHANDS.items():
         if shorthand in kwargs:
             kwargs[longhand + ("s" if plural else "")] = kwargs.pop(shorthand)
