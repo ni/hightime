@@ -2,3 +2,5 @@
 .tox/
 .coverage
 .venv
+build/
+hightime.egg-info/
