@@ -1,6 +1,9 @@
+from __future__ import annotations
+
 import datetime as std_datetime
 from decimal import Decimal
 import sys
+from typing import SupportsIndex, Type
 
 import hightime
 
@@ -29,24 +32,28 @@ _ALL_FIELDS = [
 
 
 class IntLike(object):
-    def __init__(self, value=1):
+    def __init__(self, value: int = 1):
         self.value = value
 
-    def __index__(self):
+    def __index__(self) -> int:
         return self.value
 
 
-def tzinfo(*, hours):
+def tzinfo(*, hours: int) -> std_datetime.timezone:
     return std_datetime.timezone(std_datetime.timedelta(hours=hours))
 
 
-def test_datetime_isinstance():
+def test_datetime_isinstance() -> None:
     assert isinstance(datetime(), std_datetime.datetime)
 
 
 @pytest.mark.parametrize("argname", _ALL_FIELDS)
-@pytest.mark.parametrize("argvalue", ["1", 4.5, IntLike("1"), IntLike(4.5)])
-def test_datetime_arg_wrong_type(argname, argvalue):
+@pytest.mark.parametrize(
+    "argvalue", ["1", 4.5, IntLike("1"), IntLike(4.5)]  # type: ignore[arg-type]
+)
+def test_datetime_arg_wrong_type(
+    argname: str, argvalue: float | int | SupportsIndex
+) -> None:
     with pytest.raises(TypeError):
         datetime(**{argname: argvalue})
 
@@ -66,7 +73,9 @@ def test_datetime_arg_wrong_type(argname, argvalue):
     ],
 )
 @pytest.mark.parametrize("argtype", [int, IntLike])
-def test_datetime_arg_wrong_value(argname, smallest, biggest, argtype):
+def test_datetime_arg_wrong_value(
+    argname: str, smallest: int, biggest: int, argtype: Type
+) -> None:
     with pytest.raises(ValueError):
         datetime(**{argname: argtype(smallest - 1)})
 
@@ -74,13 +83,13 @@ def test_datetime_arg_wrong_value(argname, smallest, biggest, argtype):
         datetime(**{argname: argtype(biggest + 1)})
 
 
-def test_datetime_tzinfo_as_femtoseconds():
+def test_datetime_tzinfo_as_femtoseconds() -> None:
     dt = datetime(1, 1, 1, 1, 1, 1, 1, std_datetime.timezone.utc)
     assert dt.femtosecond == 0
     assert dt.tzinfo == std_datetime.timezone.utc
 
 
-def test_datetime_properties():
+def test_datetime_properties() -> None:
     dt = datetime(**{field: index + 1 for index, field in enumerate(_ALL_FIELDS)})
     for index, field in enumerate(_ALL_FIELDS):
         assert getattr(dt, field) == index + 1
@@ -105,7 +114,7 @@ def test_datetime_properties():
         ),
     ],
 )
-def test_datetime_repr(dt, middle_part):
+def test_datetime_repr(dt: hightime.datetime, middle_part: str) -> None:
     assert repr(dt) == "hightime.datetime({})".format(middle_part)
     assert dt == eval(repr(dt))
     # @TODO: tzinfo and fold
@@ -129,7 +138,7 @@ def test_datetime_repr(dt, middle_part):
         # @TODO: Test timezone
     ],
 )
-def test_datetime_isoformat(dt, expected):
+def test_datetime_isoformat(dt: hightime.datetime, expected: str) -> None:
     assert dt.isoformat() == expected
     assert dt.isoformat(sep="X") == expected.replace("T", "X")
 
@@ -170,7 +179,7 @@ def test_datetime_isoformat(dt, expected):
         # @TODO: Test timezone
     ],
 )
-def test_datetime_str(dt, expected):
+def test_datetime_str(dt: hightime.datetime, expected: str) -> None:
     assert str(dt) == expected
     assert "{}".format(dt) == expected
 
@@ -216,7 +225,9 @@ def test_datetime_str(dt, expected):
         (datetime(2020, 4, 21, ys=1), std_datetime.datetime(2020, 4, 21), False, False),
     ],
 )
-def test_datetime_comparison(left, right, eq, lt):
+def test_datetime_comparison(
+    left: hightime.datetime, right: hightime.datetime, eq: bool, lt: bool
+) -> None:
     assert (left == right) == eq
     assert (right == left) == eq
 
@@ -236,7 +247,7 @@ def test_datetime_comparison(left, right, eq, lt):
     assert (right <= left) == (not lt or eq)
 
 
-def test_datetime_comparison_tzinfo_mismatch():
+def test_datetime_comparison_tzinfo_mismatch() -> None:
     without_tz = datetime()
     with_tz = datetime(tzinfo=tzinfo(hours=0))
 
@@ -294,7 +305,9 @@ def test_datetime_comparison_tzinfo_mismatch():
         ),
     ],
 )
-def test_datetime_add(left, right, expected):
+def test_datetime_add(
+    left: hightime.datetime, right: hightime.timedelta, expected: hightime.datetime
+) -> None:
     result = left + right
     assert result == expected
     assert isinstance(result, hightime.datetime)
@@ -340,13 +353,15 @@ def test_datetime_add(left, right, expected):
         ),
     ],
 )
-def test_datetime_sub(left, right, expected):
+def test_datetime_sub(
+    left: hightime.datetime, right: hightime.datetime, expected: hightime.timedelta
+) -> None:
     result = left - right
     assert result == expected
     assert isinstance(result, hightime.timedelta)
 
 
-def test_datetime_hash():
+def test_datetime_hash() -> None:
     assert hash(datetime(1, 1, 1)) == hash(datetime(1, 1, 1))
     assert hash(datetime(1, 1, 1, h=1, tzinfo=tzinfo(hours=1))) == hash(
         datetime(1, 1, 1, tzinfo=tzinfo(hours=0))
@@ -354,26 +369,27 @@ def test_datetime_hash():
     assert hash(datetime(1, 1, 1)) != hash(datetime(1, 1, 1, tzinfo=tzinfo(hours=0)))
 
 
-def test_datetime_strptime_type():
+def test_datetime_strptime_type() -> None:
     assert isinstance(
         hightime.datetime.strptime("21/11/06 16:30", "%d/%m/%y %H:%M"),
         hightime.datetime,
     )
 
 
-def test_datetime_tzname():
+def test_datetime_tzname() -> None:
     assert datetime().tzname() is None
-    assert datetime(tzinfo=std_datetime.timezone.utc).tzname().startswith("UTC")
+    tzname = datetime(tzinfo=std_datetime.timezone.utc).tzname()
+    assert tzname is not None and tzname.startswith("UTC")
     assert datetime(tzinfo=tzinfo(hours=1)).tzname() == "UTC+01:00"
 
 
-def test_datetime_dst():
+def test_datetime_dst() -> None:
     assert datetime().dst() is None
     assert datetime(tzinfo=std_datetime.timezone.utc).dst() is None
     assert datetime(tzinfo=tzinfo(hours=1)).dst() is None
 
 
-def test_datetime_utcoffset():
+def test_datetime_utcoffset() -> None:
     assert datetime().utcoffset() is None
     assert (
         datetime(tzinfo=std_datetime.timezone.utc).utcoffset()
@@ -387,7 +403,7 @@ def test_datetime_utcoffset():
     ).utcoffset() == hightime.timedelta(hours=1)
 
 
-def test_datetime_ctime():
+def test_datetime_ctime() -> None:
     assert datetime(2020, 4, 21, 12, 33, 5, 44).ctime() == "Tue Apr 21 12:33:05 2020"
     assert (
         datetime(2020, 4, 21, 12, 33, 5, 44, tzinfo=tzinfo(hours=1)).ctime()
@@ -395,40 +411,40 @@ def test_datetime_ctime():
     )
 
 
-def test_datetime_combine_type():
+def test_datetime_combine_type() -> None:
     assert isinstance(
         hightime.datetime.combine(std_datetime.date(1, 1, 1), std_datetime.time()),
         hightime.datetime,
     )
 
 
-def test_datetime_utcnow_type():
+def test_datetime_utcnow_type() -> None:
     assert isinstance(hightime.datetime.utcnow(), hightime.datetime)
 
 
-def test_datetime_now_type():
+def test_datetime_now_type() -> None:
     assert isinstance(hightime.datetime.now(), hightime.datetime)
 
 
-def test_datetime_fromtimestamp_type():
+def test_datetime_fromtimestamp_type() -> None:
     assert isinstance(
         hightime.datetime.fromtimestamp(1587500974.003), hightime.datetime
     )
 
 
-def test_datetime_utcfromtimestamp_type():
+def test_datetime_utcfromtimestamp_type() -> None:
     assert isinstance(
         hightime.datetime.utcfromtimestamp(1587500974.003), hightime.datetime
     )
 
 
-def test_datetime_astimezone_type():
+def test_datetime_astimezone_type() -> None:
     assert isinstance(
         datetime(tzinfo=tzinfo(hours=2)).astimezone(tzinfo(hours=1)), hightime.datetime
     )
 
 
-def test_datetime_replace():
+def test_datetime_replace() -> None:
     dt = datetime()
     assert dt == dt.replace()
     assert datetime(year=1) == datetime(year=2).replace(year=1)
@@ -502,7 +518,7 @@ def test_datetime_replace():
         ),
     ],
 )
-def test_datetime_timestamp(dt, expected):
+def test_datetime_timestamp(dt: hightime.datetime, expected: object) -> None:
     assert dt.timestamp() == expected
 
 
@@ -531,7 +547,9 @@ def test_datetime_timestamp(dt, expected):
         ),
     ],
 )
-def test_datetime_sub_total_seconds_precision(left, right, expected):
+def test_datetime_sub_total_seconds_precision(
+    left: hightime.datetime, right: hightime.datetime, expected: Decimal
+) -> None:
     result = left - right
     assert result.precision_total_seconds() == expected
     assert isinstance(result, hightime.timedelta)
