@@ -25,6 +25,8 @@ import datetime as _std_datetime
 from hightime._datetime import datetime
 from hightime._timedelta import timedelta
 
+__all__ = ["datetime", "timedelta"]
+
 # Hide that it was defined in a helper file
 datetime.__module__ = __name__
 timedelta.__module__ = __name__
