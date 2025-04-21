@@ -612,6 +612,8 @@ def test_datetime_sub_total_seconds_precision(
     [
         datetime(2020, 4, 21, 15, 29, 34),
         datetime(2020, 4, 21, 15, 29, 34, us=30, fs=2, ys=1),
+        datetime(2020, 4, 21, 15, 29, 34, us=30, fs=0x12345678, ys=0x23456789),
+        datetime(2020, 4, 21, 15, 29, 34, us=999999, fs=999999999, ys=999999999),
         datetime(2020, 1, 1),
         datetime(1970, 1, 1),
         datetime(1850, 1, 1),
@@ -629,6 +631,8 @@ def test_datetime_copy(dt: hightime.datetime) -> None:
     [
         datetime(2020, 4, 21, 15, 29, 34),
         datetime(2020, 4, 21, 15, 29, 34, us=30, fs=2, ys=1),
+        datetime(2020, 4, 21, 15, 29, 34, us=30, fs=0x12345678, ys=0x23456789),
+        datetime(2020, 4, 21, 15, 29, 34, us=999999, fs=999999999, ys=999999999),
         datetime(2020, 1, 1),
         datetime(1970, 1, 1),
         datetime(1850, 1, 1),
