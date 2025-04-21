@@ -1,7 +1,9 @@
 from __future__ import annotations
 
+import copy
 import datetime as std_datetime
 from decimal import Decimal
+import pickle
 from typing import SupportsIndex, Type
 
 import hightime
@@ -603,3 +605,37 @@ def test_datetime_sub_total_seconds_precision(
     result = left - right
     assert result.precision_total_seconds() == expected
     assert isinstance(result, hightime.timedelta)
+
+
+@pytest.mark.parametrize(
+    "dt",
+    [
+        datetime(2020, 4, 21, 15, 29, 34),
+        datetime(2020, 4, 21, 15, 29, 34, us=30, fs=2, ys=1),
+        datetime(2020, 1, 1),
+        datetime(1970, 1, 1),
+        datetime(1850, 1, 1),
+        datetime(2020, 4, 21, 15, us=30, fs=2, ys=1, tzinfo=tzinfo(hours=2)),
+    ],
+)
+def test_datetime_copy(dt: hightime.datetime) -> None:
+    dt_copy = copy.copy(dt)
+    assert isinstance(dt_copy, hightime.datetime)
+    assert dt_copy == dt
+
+
+@pytest.mark.parametrize(
+    "dt",
+    [
+        datetime(2020, 4, 21, 15, 29, 34),
+        datetime(2020, 4, 21, 15, 29, 34, us=30, fs=2, ys=1),
+        datetime(2020, 1, 1),
+        datetime(1970, 1, 1),
+        datetime(1850, 1, 1),
+        datetime(2020, 4, 21, 15, us=30, fs=2, ys=1, tzinfo=tzinfo(hours=2)),
+    ],
+)
+def test_datetime_pickle(dt: hightime.datetime) -> None:
+    dt_copy = pickle.loads(pickle.dumps(dt))
+    assert isinstance(dt_copy, hightime.datetime)
+    assert dt_copy == dt

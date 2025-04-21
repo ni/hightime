@@ -1,6 +1,8 @@
 from __future__ import annotations
 
+import copy
 import datetime as datetime
+import pickle
 from typing import Any
 
 import hightime
@@ -695,3 +697,35 @@ def test_timedelta_hash() -> None:
     assert hash(timedelta()) == hash(timedelta())
     assert hash(timedelta(fs=1)) == hash(timedelta(fs=1))
     assert hash(timedelta(fs=1)) != hash(timedelta(ys=1))
+
+
+@pytest.mark.parametrize(
+    "td",
+    [
+        timedelta(),
+        timedelta(d=1, s=2, us=3),
+        timedelta(d=1, s=2, us=3, fs=4, ys=5),
+        hightime.timedelta.min,
+        hightime.timedelta.max,
+    ],
+)
+def test_timedelta_copy(td: hightime.timedelta) -> None:
+    td_copy = copy.copy(td)
+    assert isinstance(td_copy, hightime.timedelta)
+    assert td_copy == td
+
+
+@pytest.mark.parametrize(
+    "td",
+    [
+        timedelta(),
+        timedelta(d=1, s=2, us=3),
+        timedelta(d=1, s=2, us=3, fs=4, ys=5),
+        hightime.timedelta.min,
+        hightime.timedelta.max,
+    ],
+)
+def test_timedelta_pickle(td: hightime.timedelta) -> None:
+    td_copy = pickle.loads(pickle.dumps(td))
+    assert isinstance(td_copy, hightime.timedelta)
+    assert td_copy == td
