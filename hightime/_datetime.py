@@ -38,8 +38,8 @@ class datetime(std_datetime.datetime):
     def __new__impl__(
         cls,
         year,
-        month,
-        day,
+        month=None,
+        day=None,
         hour=0,
         minute=0,
         second=0,
@@ -52,6 +52,28 @@ class datetime(std_datetime.datetime):
         *,
         fold=0,
     ):
+        if (
+            isinstance(year, (bytes, str))
+            and len(year) == 18
+            and 1 <= ord(year[2:3]) & 0x7F <= 12
+        ):
+            # Pickle support
+            if isinstance(year, str):
+                try:
+                    year = bytes(year, "latin1")
+                except UnicodeEncodeError:
+                    raise ValueError(
+                        "Failed to encode latin1 string when unpickling a datetime "
+                        "object. pickle.load(data, encoding='latin1') is assumed."
+                    )
+            # datetime pickle support uses special constructor arguments: a 10-byte
+            # basestate and an optional tzinfo. hightime adds 8 more bytes for
+            # femtoseconds and yoctoseconds.
+            self = super().__new__(cls, year[0:10], month)
+            fs1, fs2, fs3, fs4, ys1, ys2, ys3, ys4 = year[10:18]
+            self._femtosecond = (((((fs1 << 8) | fs2) << 8) | fs3) << 8) | fs4
+            self._yoctosecond = (((((ys1 << 8) | ys2) << 8) | ys3) << 8) | ys4
+            return self
         self = super().__new__(
             cls,
             year=year,
@@ -378,6 +400,37 @@ class datetime(std_datetime.datetime):
                 )
                 - offset
             )
+
+    # Pickle support
+
+    def _getstate(self, protocol=3):
+        reduce_value = super().__reduce_ex__(protocol)
+        if not isinstance(reduce_value, tuple):
+            raise TypeError(
+                f"expected __reduce_ex__ to return tuple, not '{type(reduce_value)}'"
+            )
+        ctor_args = reduce_value[1]
+        if not isinstance(ctor_args, tuple):
+            raise TypeError(f"expected ctor args to be tuple, not '{type(ctor_args)}'")
+        basestate = ctor_args[0]
+        if not isinstance(basestate, bytes):
+            raise TypeError(f"expected basestate to be bytes, not '{type(basestate)}'")
+        if len(basestate) != 10:
+            raise ValueError(f"expected basestate length 10, not {len(basestate)}")
+        fs3, fs4 = divmod(self._femtosecond, 256)
+        fs2, fs3 = divmod(fs3, 256)
+        fs1, fs2 = divmod(fs2, 256)
+        ys3, ys4 = divmod(self._yoctosecond, 256)
+        ys2, ys3 = divmod(ys3, 256)
+        ys1, ys2 = divmod(ys2, 256)
+        basestate += bytes([fs1, fs2, fs3, fs4, ys1, ys2, ys3, ys4])
+        return (basestate,) + ctor_args[1:]
+
+    def __reduce_ex__(self, protocol):
+        return (self.__class__, self._getstate(protocol))
+
+    def __reduce__(self):
+        return self.__reduce_ex__(2)
 
     # Helper methods
 
