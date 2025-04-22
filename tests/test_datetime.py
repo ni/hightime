@@ -617,7 +617,10 @@ def test_datetime_sub_total_seconds_precision(
         datetime(2020, 1, 1),
         datetime(1970, 1, 1),
         datetime(1850, 1, 1),
-        datetime(2020, 4, 21, 15, us=30, fs=2, ys=1, tzinfo=tzinfo(hours=2)),
+        datetime(2020, 4, 21, 15, 29, 34, us=30, fs=2, ys=1, tzinfo=tzinfo(hours=2)),
+        datetime(2020, 4, 21, 15, 29, 34, us=30, fs=2, ys=1, tzinfo=tzinfo(hours=23)),
+        datetime(2020, 4, 21, 15, 29, 34, us=30, fs=2, ys=1, tzinfo=tzinfo(hours=-1)),
+        datetime(2020, 4, 21, 15, 29, 34, us=30, fs=2, ys=1, fold=1),
     ],
 )
 def test_datetime_copy(dt: hightime.datetime) -> None:
@@ -636,7 +639,10 @@ def test_datetime_copy(dt: hightime.datetime) -> None:
         datetime(2020, 1, 1),
         datetime(1970, 1, 1),
         datetime(1850, 1, 1),
-        datetime(2020, 4, 21, 15, us=30, fs=2, ys=1, tzinfo=tzinfo(hours=2)),
+        datetime(2020, 4, 21, 15, 29, 34, us=30, fs=2, ys=1, tzinfo=tzinfo(hours=2)),
+        datetime(2020, 4, 21, 15, 29, 34, us=30, fs=2, ys=1, tzinfo=tzinfo(hours=23)),
+        datetime(2020, 4, 21, 15, 29, 34, us=30, fs=2, ys=1, tzinfo=tzinfo(hours=-1)),
+        datetime(2020, 4, 21, 15, 29, 34, us=30, fs=2, ys=1, fold=1),
     ],
 )
 def test_datetime_pickle(dt: hightime.datetime) -> None:
