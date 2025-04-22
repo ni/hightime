@@ -27,7 +27,8 @@ class datetime(std_datetime.datetime):
         second: SupportsIndex,
         microsecond: SupportsIndex,
         tzinfo: Optional[std_datetime._TzInfo],
-        **kwargs: Any,
+        *,
+        fold: int = ...,
     ) -> datetime: ...
     @overload
     @staticmethod
@@ -43,7 +44,8 @@ class datetime(std_datetime.datetime):
         femtosecond: SupportsIndex = ...,
         yoctosecond: SupportsIndex = ...,
         tzinfo: Optional[std_datetime._TzInfo] = ...,
-        **kwargs: Any,
+        *,
+        fold: int = ...,
     ) -> datetime: ...
     @classmethod
     def __new__impl__(
@@ -58,7 +60,8 @@ class datetime(std_datetime.datetime):
         femtosecond: SupportsIndex = ...,
         yoctosecond: SupportsIndex = ...,
         tzinfo: Optional[std_datetime._TzInfo] = ...,
-        **kwargs: Any,
+        *,
+        fold: int = ...,
     ) -> datetime: ...
     def __repr__(self) -> str: ...
     @overload  # type: ignore[override]
@@ -88,7 +91,8 @@ class datetime(std_datetime.datetime):
         femtosecond: SupportsIndex = ...,
         yoctosecond: SupportsIndex = ...,
         tzinfo: Optional[std_datetime._TzInfo] = ...,
-        **kwargs: Any,
+        *,
+        fold: int = ...,
     ) -> datetime: ...
     @classmethod
     def utcfromtimestamp(cls, t: float, /) -> datetime: ...
