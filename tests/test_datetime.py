@@ -2,7 +2,6 @@ from __future__ import annotations
 
 import datetime as std_datetime
 from decimal import Decimal
-import sys
 from typing import SupportsIndex, Type
 
 import hightime
@@ -11,8 +10,6 @@ import pytest
 
 from .shorthands import datetime
 from .shorthands import timedelta
-
-_isPython36OrHigher = sys.version_info >= (3, 6)
 
 
 _SUBMICROSECOND_FIELDS = [
@@ -112,53 +109,105 @@ def test_datetime_properties() -> None:
             datetime(2020, 4, 20, 15, 10, 33, 976508, 569718000, 529850102),
             "2020, 4, 20, 15, 10, 33, 976508, 569718000, 529850102",
         ),
+        (
+            datetime(2020, 4, 21, tzinfo=tzinfo(hours=1)),
+            "2020, 4, 21, 0, 0, "
+            "tzinfo=datetime.timezone(datetime.timedelta(seconds=3600))",
+        ),
+        (
+            datetime(1, 1, 1, ys=4, tzinfo=tzinfo(hours=-1)),
+            "1, 1, 1, 0, 0, 0, 0, 0, 4, "
+            "tzinfo=datetime.timezone(datetime.timedelta(days=-1, seconds=82800))",
+        ),
+        (
+            datetime(1, 1, 1, ys=4, tzinfo=tzinfo(hours=-1), fold=1),
+            "1, 1, 1, 0, 0, 0, 0, 0, 4, "
+            "tzinfo=datetime.timezone(datetime.timedelta(days=-1, seconds=82800)), "
+            "fold=1",
+        ),
+        (datetime(2020, 4, 21, fold=1), "2020, 4, 21, 0, 0, fold=1"),
+        (datetime(1, 1, 1, ys=4, fold=1), "1, 1, 1, 0, 0, 0, 0, 0, 4, fold=1"),
     ],
 )
 def test_datetime_repr(dt: hightime.datetime, middle_part: str) -> None:
+    import datetime as datetime  # noqa: F401 - for tzinfo eval
+
     assert repr(dt) == "hightime.datetime({})".format(middle_part)
     assert dt == eval(repr(dt))
-    # @TODO: tzinfo and fold
 
 
 @pytest.mark.parametrize(
-    "dt, expected",
+    "dt, expected, expected_tz",
     [
-        (datetime(2020, 4, 21, 15, 29, 34), "2020-04-21T15:29:34"),
-        (datetime(1, 1, 1, us=12345), "0001-01-01T00:00:00.012345"),
-        (datetime(1, 1, 1, us=10), "0001-01-01T00:00:00.000010"),
-        (datetime(1, 1, 1, fs=40), "0001-01-01T00:00:00.000000000000040"),
+        (datetime(2020, 4, 21, 15, 29, 34), "2020-04-21T15:29:34", ""),
+        (datetime(1, 1, 1, us=12345), "0001-01-01T00:00:00.012345", ""),
+        (datetime(1, 1, 1, us=10), "0001-01-01T00:00:00.000010", ""),
+        (datetime(1, 1, 1, fs=40), "0001-01-01T00:00:00.000000000000040", ""),
         (
             datetime(1, 1, 1, ys=40),
             "0001-01-01T00:00:00.000000000000000000000040",
+            "",
         ),
         (
             datetime(2020, 4, 20, 15, 10, 33, 976508, 569718000, 529850102),
             "2020-04-20T15:10:33.976508569718000529850102",
+            "",
         ),
-        # @TODO: Test timezone
+        (
+            datetime(2020, 4, 21, 15, 29, 34, tzinfo=tzinfo(hours=1)),
+            "2020-04-21T15:29:34",
+            "+01:00",
+        ),
+        (
+            datetime(2020, 4, 21, 15, 29, 34, tzinfo=tzinfo(hours=23)),
+            "2020-04-21T15:29:34",
+            "+23:00",
+        ),
+        (
+            datetime(1, 1, 1, ys=40, tzinfo=tzinfo(hours=1)),
+            "0001-01-01T00:00:00.000000000000000000000040",
+            "+01:00",
+        ),
+        pytest.param(
+            datetime(1, 1, 1, ys=40, tzinfo=tzinfo(hours=-1)),
+            "0001-01-01T00:00:00.000000000000000000000040",
+            "-01:00",
+            marks=pytest.mark.xfail(reason="https://github.com/ni/hightime/issues/52"),
+        ),
+        (
+            datetime(1, 1, 1, ys=40, fold=1),
+            "0001-01-01T00:00:00.000000000000000000000040",
+            "",
+        ),
+        (
+            datetime(1, 1, 1, ys=40, fold=1),
+            "0001-01-01T00:00:00.000000000000000000000040",
+            "",
+        ),
     ],
 )
-def test_datetime_isoformat(dt: hightime.datetime, expected: str) -> None:
-    assert dt.isoformat() == expected
-    assert dt.isoformat(sep="X") == expected.replace("T", "X")
+def test_datetime_isoformat(
+    dt: hightime.datetime, expected: str, expected_tz: str
+) -> None:
+    assert dt.isoformat() == expected + expected_tz
+    assert dt.isoformat(sep="X") == expected.replace("T", "X") + expected_tz
 
-    if _isPython36OrHigher:
-        assert dt.isoformat(timespec="hours") == expected[:13]
-        assert dt.isoformat(timespec="minutes") == expected[:16]
-        assert dt.isoformat(timespec="seconds") == expected[:19]
+    assert dt.isoformat(timespec="hours") == expected[:13] + expected_tz
+    assert dt.isoformat(timespec="minutes") == expected[:16] + expected_tz
+    assert dt.isoformat(timespec="seconds") == expected[:19] + expected_tz
 
-        if len(expected) < 20:
-            expected += "."
-        expected = expected.ljust(44, "0")
+    if len(expected) < 20:
+        expected += "."
+    expected = expected.ljust(44, "0")
 
-        assert dt.isoformat(timespec="milliseconds") == expected[:23]
-        assert dt.isoformat(timespec="microseconds") == expected[:26]
-        assert dt.isoformat(timespec="nanoseconds") == expected[:29]
-        assert dt.isoformat(timespec="picoseconds") == expected[:32]
-        assert dt.isoformat(timespec="femtoseconds") == expected[:35]
-        assert dt.isoformat(timespec="attoseconds") == expected[:38]
-        assert dt.isoformat(timespec="zeptoseconds") == expected[:41]
-        assert dt.isoformat(timespec="yoctoseconds") == expected[:44]
+    assert dt.isoformat(timespec="milliseconds") == expected[:23] + expected_tz
+    assert dt.isoformat(timespec="microseconds") == expected[:26] + expected_tz
+    assert dt.isoformat(timespec="nanoseconds") == expected[:29] + expected_tz
+    assert dt.isoformat(timespec="picoseconds") == expected[:32] + expected_tz
+    assert dt.isoformat(timespec="femtoseconds") == expected[:35] + expected_tz
+    assert dt.isoformat(timespec="attoseconds") == expected[:38] + expected_tz
+    assert dt.isoformat(timespec="zeptoseconds") == expected[:41] + expected_tz
+    assert dt.isoformat(timespec="yoctoseconds") == expected[:44] + expected_tz
 
 
 @pytest.mark.parametrize(
@@ -460,6 +509,7 @@ def test_datetime_replace() -> None:
     assert datetime(hour=1, tzinfo=tzinfo(hours=1)) == datetime(hour=2).replace(
         tzinfo=tzinfo(hours=2)
     )
+    assert datetime(hour=1, fold=1) == datetime(hour=1).replace(fold=1)
     dt = datetime(
         year=1,
         month=1,
