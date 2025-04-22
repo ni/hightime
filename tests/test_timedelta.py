@@ -738,7 +738,7 @@ def test_timedelta_pickle(td: hightime.timedelta) -> None:
 
 
 def test_timedelta_pickle_uses_public_package_name() -> None:
-    td = (timedelta(d=1, s=2, us=3, fs=4, ys=5),)
+    td = timedelta(d=1, s=2, us=3, fs=4, ys=5)
     td_bytes = pickle.dumps(td)
     assert b"hightime" in td_bytes
     assert b"hightime._timedelta" not in td_bytes
