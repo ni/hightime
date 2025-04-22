@@ -649,3 +649,10 @@ def test_datetime_pickle(dt: hightime.datetime) -> None:
     dt_copy = pickle.loads(pickle.dumps(dt))
     assert isinstance(dt_copy, hightime.datetime)
     assert dt_copy == dt
+
+
+def test_datetime_pickle_uses_public_package_name() -> None:
+    dt = datetime(2020, 4, 21, 15, 29, 34, us=30, fs=2, ys=1)
+    dt_bytes = pickle.dumps(dt)
+    assert b"hightime" in dt_bytes
+    assert b"hightime._datetime" not in dt_bytes
