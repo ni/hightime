@@ -1,11 +1,8 @@
 import datetime as std_datetime
-import sys
 from collections import OrderedDict
 from itertools import dropwhile
 
 import hightime
-
-_PY36 = sys.version_info >= (3, 6)
 
 
 # Mostly ripped from `datetime`'s
