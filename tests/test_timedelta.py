@@ -1,6 +1,8 @@
 from __future__ import annotations
 
+import copy
 import datetime as datetime
+import pickle
 from typing import Any
 
 import hightime
@@ -695,3 +697,48 @@ def test_timedelta_hash() -> None:
     assert hash(timedelta()) == hash(timedelta())
     assert hash(timedelta(fs=1)) == hash(timedelta(fs=1))
     assert hash(timedelta(fs=1)) != hash(timedelta(ys=1))
+
+
+@pytest.mark.parametrize(
+    "td",
+    [
+        timedelta(),
+        timedelta(d=1, s=2, us=3),
+        timedelta(d=1, s=2, us=3, fs=4, ys=5),
+        timedelta(d=1, s=2, us=3, fs=0x12345678, ys=0x23456789),
+        timedelta(d=1, s=2, us=999999, fs=999999999, ys=999999999),
+        timedelta(d=-1, h=23),
+        hightime.timedelta.min,
+        hightime.timedelta.max,
+    ],
+)
+def test_timedelta_copy(td: hightime.timedelta) -> None:
+    td_copy = copy.copy(td)
+    assert isinstance(td_copy, hightime.timedelta)
+    assert td_copy == td
+
+
+@pytest.mark.parametrize(
+    "td",
+    [
+        timedelta(),
+        timedelta(d=1, s=2, us=3),
+        timedelta(d=1, s=2, us=3, fs=4, ys=5),
+        timedelta(d=1, s=2, us=3, fs=0x12345678, ys=0x23456789),
+        timedelta(d=1, s=2, us=999999, fs=999999999, ys=999999999),
+        timedelta(d=-1, h=23),
+        hightime.timedelta.min,
+        hightime.timedelta.max,
+    ],
+)
+def test_timedelta_pickle(td: hightime.timedelta) -> None:
+    td_copy = pickle.loads(pickle.dumps(td))
+    assert isinstance(td_copy, hightime.timedelta)
+    assert td_copy == td
+
+
+def test_timedelta_pickle_uses_public_package_name() -> None:
+    td = timedelta(d=1, s=2, us=3, fs=4, ys=5)
+    td_bytes = pickle.dumps(td)
+    assert b"hightime" in td_bytes
+    assert b"hightime._timedelta" not in td_bytes

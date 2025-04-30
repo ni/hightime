@@ -289,6 +289,28 @@ class timedelta(std_datetime.timedelta):
     def __hash__(self):
         return hash(timedelta._as_tuple(self))
 
+    # Pickle support
+
+    def _getstate(self):
+        return (
+            self.days,
+            self.seconds,
+            self.microseconds,
+            0,  # milliseconds
+            0,  # minutes
+            0,  # hours
+            0,  # weeks
+            0,  # nanoseconds
+            0,  # picoseconds
+            self._femtoseconds,
+            0,  # attoseconds
+            0,  # zeptoseconds
+            self._yoctoseconds,
+        )
+
+    def __reduce__(self):
+        return (self.__class__, self._getstate())
+
     # Helper methods
 
     @classmethod
