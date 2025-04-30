@@ -1,11 +1,8 @@
 import datetime as std_datetime
-import sys
 from collections import OrderedDict
 from itertools import dropwhile
 
 import hightime
-
-_PY36 = sys.version_info >= (3, 6)
 
 
 # Mostly ripped from `datetime`'s
@@ -52,7 +49,8 @@ class datetime(std_datetime.datetime):
         femtosecond=0,
         yoctosecond=0,
         tzinfo=None,
-        **kwargs
+        *,
+        fold=0,
     ):
         self = super().__new__(
             cls,
@@ -64,7 +62,7 @@ class datetime(std_datetime.datetime):
             second=second,
             microsecond=microsecond,
             tzinfo=tzinfo,
-            **kwargs
+            fold=fold,
         )
 
         femtosecond = _checkArg("femtosecond", femtosecond)
@@ -94,9 +92,7 @@ class datetime(std_datetime.datetime):
     second = std_datetime.datetime.second
     microsecond = std_datetime.datetime.microsecond
     tzinfo = std_datetime.datetime.tzinfo
-
-    if _PY36:
-        fold = std_datetime.datetime.fold
+    fold = std_datetime.datetime.fold
 
     @property
     def femtosecond(self):
@@ -153,10 +149,7 @@ class datetime(std_datetime.datetime):
                     break
 
         if timespec not in specs:
-            kwargs = dict()
-            if _PY36:
-                kwargs["timespec"] = timespec
-            return super().isoformat(sep, **kwargs)
+            return super().isoformat(sep, timespec)
 
         value = self._yoctosecond + (self._femtosecond * 1000000000)
         for spec in specs:
@@ -170,12 +163,6 @@ class datetime(std_datetime.datetime):
         iso_strs[0] += "." + fmt.format(self.microsecond, value)
         return "+".join(iso_strs)
 
-    if not _PY36:
-        _isoformat = isoformat
-
-        def isoformat(self, sep="T"):
-            return self._isoformat(sep)
-
     def replace(
         self,
         year=None,
@@ -188,7 +175,8 @@ class datetime(std_datetime.datetime):
         femtosecond=None,
         yoctosecond=None,
         tzinfo=True,
-        **kwargs
+        *,
+        fold=None,
     ):
         if year is None:
             year = self.year
@@ -210,8 +198,8 @@ class datetime(std_datetime.datetime):
             yoctosecond = self.yoctosecond
         if tzinfo is True:
             tzinfo = self.tzinfo
-        if _PY36:
-            kwargs.setdefault("fold", self.fold)
+        if fold is None:
+            fold = self.fold
         return type(self)(
             year,
             month,
@@ -223,7 +211,7 @@ class datetime(std_datetime.datetime):
             femtosecond,
             yoctosecond,
             tzinfo=tzinfo,
-            **kwargs
+            fold=fold,
         )
 
     # String operators
@@ -410,10 +398,6 @@ class datetime(std_datetime.datetime):
 
     @classmethod
     def _fromBase(cls, base_datetime):
-        ctor_kwargs = dict()
-        if _PY36:
-            ctor_kwargs = dict(fold=base_datetime.fold)
-
         return cls(
             year=base_datetime.year,
             month=base_datetime.month,
@@ -423,5 +407,5 @@ class datetime(std_datetime.datetime):
             second=base_datetime.second,
             microsecond=base_datetime.microsecond,
             tzinfo=base_datetime.tzinfo,
-            **ctor_kwargs
+            fold=base_datetime.fold,
         )
