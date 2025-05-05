@@ -1,0 +1,13 @@
+Source: python-hightime
+Section: python
+Priority: optional
+Maintainer: "Cedric Boudinet" <boudinpg@gmail.com>
+Build-Depends:
+ python3-all,
+ python3-pytest,
+ python3-pytest-cov,
+
+Package: python3-hightime
+Architecture: all
+Description: Hightime Python API
+
