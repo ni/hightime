@@ -403,8 +403,9 @@ class datetime(std_datetime.datetime):
 
     # Pickle support
 
-    # The pure-Python implementation of datetime.datetime has a _getstate() method. Do not override
-    # it because that would cause infinite recursion when running under PyPy.
+    # The pure-Python implementation of datetime.datetime has a _getstate() method. Do
+    # not override it because that would cause infinite recursion when running under
+    # PyPy.
     def _hightime_getstate(self, protocol=3):
         reduce_value = super().__reduce_ex__(protocol)
         if not isinstance(reduce_value, tuple):
