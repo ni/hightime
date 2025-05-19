@@ -21,7 +21,6 @@ limited. For the exact limitation, please consult the various methods.
 
 import datetime as _std_datetime
 
-
 from hightime._datetime import datetime
 from hightime._timedelta import timedelta
 

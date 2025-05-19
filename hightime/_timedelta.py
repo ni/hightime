@@ -221,10 +221,7 @@ class timedelta(std_datetime.timedelta):
     def __add__(self, other):
         if isinstance(other, std_datetime.timedelta):
             return timedelta(
-                **{
-                    field: getattr(self, field) + getattr(other, field, 0)
-                    for field in _FIELD_NAMES
-                }
+                **{field: getattr(self, field) + getattr(other, field, 0) for field in _FIELD_NAMES}
             )
         return NotImplemented
 
@@ -233,10 +230,7 @@ class timedelta(std_datetime.timedelta):
     def __sub__(self, other):
         if isinstance(other, std_datetime.timedelta):
             return timedelta(
-                **{
-                    field: getattr(self, field) - getattr(other, field, 0)
-                    for field in _FIELD_NAMES
-                }
+                **{field: getattr(self, field) - getattr(other, field, 0) for field in _FIELD_NAMES}
             )
         return NotImplemented
 
@@ -245,9 +239,7 @@ class timedelta(std_datetime.timedelta):
 
     def __mul__(self, other):
         if isinstance(other, (int, float)):
-            return timedelta(
-                **{field: getattr(self, field) * other for field in _FIELD_NAMES}
-            )
+            return timedelta(**{field: getattr(self, field) * other for field in _FIELD_NAMES})
         return NotImplemented
 
     __rmul__ = __mul__
@@ -267,15 +259,11 @@ class timedelta(std_datetime.timedelta):
 
         if isinstance(other, std_datetime.timedelta):
             return float(Fraction(timedelta._as_ys(self), timedelta._as_ys(other)))
-        return timedelta(
-            **{field: getattr(self, field) / other for field in _FIELD_NAMES}
-        )
+        return timedelta(**{field: getattr(self, field) / other for field in _FIELD_NAMES})
 
     def __mod__(self, other):
         if isinstance(other, std_datetime.timedelta):
-            return timedelta(
-                yoctoseconds=timedelta._as_ys(self) % timedelta._as_ys(other)
-            )
+            return timedelta(yoctoseconds=timedelta._as_ys(self) % timedelta._as_ys(other))
         return NotImplemented
 
     def __divmod__(self, other):
@@ -330,7 +318,5 @@ class timedelta(std_datetime.timedelta):
             return _cmp(timedelta._as_tuple(self), timedelta._as_tuple(other))
         else:
             raise TypeError(
-                "can't compare '{}' to '{}'".format(
-                    type(self).__name__, type(other).__name__
-                )
+                "can't compare '{}' to '{}'".format(type(self).__name__, type(other).__name__)
             )

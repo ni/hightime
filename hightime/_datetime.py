@@ -13,14 +13,10 @@ def _checkArg(name, value):
         try:
             value = value.__index__()
         except AttributeError:
-            raise TypeError(
-                "an integer is required (got type %s)" % type(value).__name__
-            ) from None
+            raise TypeError("an integer is required (got type %s)" % type(value).__name__) from None
         else:
             if not isinstance(value, int):
-                raise TypeError(
-                    "__index__ returned non-int (type %s)" % type(value).__name__
-                )
+                raise TypeError("__index__ returned non-int (type %s)" % type(value).__name__)
 
     if not 0 <= value <= 999999999:
         raise ValueError("{} must be in 0..999999999".format(name), value)
@@ -52,11 +48,7 @@ class datetime(std_datetime.datetime):
         *,
         fold=0,
     ):
-        if (
-            isinstance(year, (bytes, str))
-            and len(year) == 18
-            and 1 <= ord(year[2:3]) & 0x7F <= 12
-        ):
+        if isinstance(year, (bytes, str)) and len(year) == 18 and 1 <= ord(year[2:3]) & 0x7F <= 12:
             # Pickle support
             if isinstance(year, str):
                 try:
@@ -257,9 +249,7 @@ class datetime(std_datetime.datetime):
             )
         )
 
-        values = [self.year, self.month, self.day, self.hour, self.minute] + list(
-            subminute_fields
-        )
+        values = [self.year, self.month, self.day, self.hour, self.minute] + list(subminute_fields)
         s += "({}".format(", ".join(map(str, values)))
 
         if self.tzinfo is not None:
@@ -275,9 +265,7 @@ class datetime(std_datetime.datetime):
 
     def __eq__(self, other):
         if isinstance(other, std_datetime.datetime):
-            offset_type_mismatch = (
-                (self.utcoffset() is None) + (other.utcoffset() is None)
-            ) == 1
+            offset_type_mismatch = ((self.utcoffset() is None) + (other.utcoffset() is None)) == 1
             return not offset_type_mismatch and not bool(self - other)
         elif not isinstance(other, std_datetime.date):
             return NotImplemented
@@ -409,9 +397,7 @@ class datetime(std_datetime.datetime):
     def _hightime_getstate(self, protocol=3):
         reduce_value = super().__reduce_ex__(protocol)
         if not isinstance(reduce_value, tuple):
-            raise TypeError(
-                f"expected __reduce_ex__ to return tuple, not '{type(reduce_value)}'"
-            )
+            raise TypeError(f"expected __reduce_ex__ to return tuple, not '{type(reduce_value)}'")
         ctor_args = reduce_value[1]
         if not isinstance(ctor_args, tuple):
             raise TypeError(f"expected ctor args to be tuple, not '{type(ctor_args)}'")
@@ -447,9 +433,7 @@ class datetime(std_datetime.datetime):
             return NotImplemented
         else:
             raise TypeError(
-                "can't compare '{}' to '{}'".format(
-                    type(self).__name__, type(other).__name__
-                )
+                "can't compare '{}' to '{}'".format(type(self).__name__, type(other).__name__)
             )
 
     @classmethod

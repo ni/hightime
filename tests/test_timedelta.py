@@ -6,7 +6,6 @@ import pickle
 from typing import Any
 
 import hightime
-
 import pytest
 
 from .shorthands import timedelta
@@ -104,9 +103,7 @@ from .shorthands import timedelta
         (timedelta(s=0.123456), timedelta(us=123456)),
     ],
 )
-def test_timedelta_constuctor(
-    left: hightime.timedelta, right: hightime.timedelta
-) -> None:
+def test_timedelta_constuctor(left: hightime.timedelta, right: hightime.timedelta) -> None:
     assert left == right
 
 
@@ -160,9 +157,7 @@ def test_timedelta_total_seconds(td: hightime.timedelta, expected: float) -> Non
         ),
     ],
 )
-def test_timedelta_precision_total_seconds(
-    td: hightime.timedelta, expected: float
-) -> None:
+def test_timedelta_precision_total_seconds(td: hightime.timedelta, expected: float) -> None:
     assert float(td.precision_total_seconds()) == expected
 
 
@@ -305,9 +300,7 @@ def test_timedelta_comparison(
     "other",
     [False, True, 0, 1, (0, 0, 0, 0, 0), (1, 0, 0, 0, 0), "", [], ()],
 )
-def test_timedelta_comparison_unrelated_type(
-    td: hightime.timedelta, other: Any
-) -> None:
+def test_timedelta_comparison_unrelated_type(td: hightime.timedelta, other: Any) -> None:
     assert not (td == other)
     assert not (other == td)
     assert td != other
@@ -456,9 +449,7 @@ def test_timedelta_sub_integrals() -> None:
 def test_timedelta_mul(
     left: hightime.timedelta, right: float, expected: hightime.timedelta
 ) -> None:
-    def test(
-        left: hightime.timedelta, right: float, expected: hightime.timedelta
-    ) -> None:
+    def test(left: hightime.timedelta, right: float, expected: hightime.timedelta) -> None:
         result: hightime.timedelta | datetime.timedelta
         result = left * right
         assert result == expected
