@@ -458,6 +458,7 @@ def test_datetime_combine_type() -> None:
     )
 
 
+@pytest.mark.filterwarnings("ignore:.*utcnow.*is deprecated.*:DeprecationWarning")
 def test_datetime_utcnow_type() -> None:
     assert isinstance(hightime.datetime.utcnow(), hightime.datetime)
 
@@ -470,6 +471,7 @@ def test_datetime_fromtimestamp_type() -> None:
     assert isinstance(hightime.datetime.fromtimestamp(1587500974.003), hightime.datetime)
 
 
+@pytest.mark.filterwarnings("ignore:.*utcfromtimestamp.*is deprecated.*:DeprecationWarning")
 def test_datetime_utcfromtimestamp_type() -> None:
     assert isinstance(hightime.datetime.utcfromtimestamp(1587500974.003), hightime.datetime)
 
