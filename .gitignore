@@ -3,4 +3,5 @@
 .coverage
 .venv
 build/
+dist/
 hightime.egg-info/
