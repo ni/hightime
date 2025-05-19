@@ -30,4 +30,4 @@ jobs:
     - name: Run mypy
       run: |
         pip install mypy
-        mypy --config-file tox.ini
+        mypy
