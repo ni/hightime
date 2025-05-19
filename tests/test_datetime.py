@@ -28,10 +28,14 @@ _ALL_FIELDS = [
 
 
 class IntLike(object):
+    """An object that supports conversion to int."""
+
     def __init__(self, value: int = 1):
+        """Initialize the IntLike object."""
         self.value = value
 
     def __index__(self) -> int:
+        """Return self converted to an integer."""
         return self.value
 
 

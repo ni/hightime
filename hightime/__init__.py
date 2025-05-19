@@ -1,6 +1,4 @@
-"""hightime
-
-This package extends the built-in datetime types to allow for sub-microsecond values.
+"""This package extends the built-in datetime types to support sub-microsecond values.
 
 The classes defined in this package are:
 

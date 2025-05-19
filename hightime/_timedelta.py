@@ -37,7 +37,12 @@ def _cmp(x, y):
     return 0 if x == y else 1 if x > y else -1
 
 
-class timedelta(std_datetime.timedelta):
+class timedelta(std_datetime.timedelta):  # noqa: N801 - class name should use CapWords convention
+    """A timedelta represents a duration.
+
+    This class extends :any:`datetime.timedelta` to support up to yoctosecond precision.
+    """
+
     __slots__ = ("_femtoseconds", "_yoctoseconds")
 
     def __new__(
@@ -57,6 +62,12 @@ class timedelta(std_datetime.timedelta):
         zeptoseconds=0,
         yoctoseconds=0,
     ):
+        """Construct a timedelta object.
+
+        The arguments are the same as for :any:`datetime.timedelta`, with the addition of
+        ``nanoseconds``, ``picoseconds``, ``femtoseconds``, ``attoseconds``, ``zeptoseconds``, and
+        ``yoctoseconds``.
+        """
         # Ideally we'd just take care of the sub-microsecond bits, but since the user
         # could specify larger units as a float with a sub-microsecond value,
         # datetime.datetime would round it. Therefore we're responsible for everything.
@@ -122,12 +133,12 @@ class timedelta(std_datetime.timedelta):
 
     @property
     def femtoseconds(self):
-        """femtoseconds"""
+        """The number of femtoseconds, between 0 and 999999999, inclusive."""
         return self._femtoseconds
 
     @property
     def yoctoseconds(self):
-        """yoctoseconds"""
+        """The number of yoctoseconds, between 0 and 999999999, inclusive."""
         return self._yoctoseconds
 
     # Public methods
@@ -145,7 +156,8 @@ class timedelta(std_datetime.timedelta):
     def precision_total_seconds(self):
         """Precise total seconds in the duration.
 
-        Note: up to 64 significant digits are used in computation.
+        .. note::
+            Up to 64 significant digits are used in computation.
         """
         with decimal.localcontext() as ctx:
             ctx.prec = 64
@@ -160,6 +172,7 @@ class timedelta(std_datetime.timedelta):
     # String operators
 
     def __repr__(self):
+        """Return repr(self)."""
         # Follow newer repr: https://github.com/python/cpython/pull/3687
         r = "{}.{}".format(self.__class__.__module__, self.__class__.__qualname__)
         r += "("
@@ -172,6 +185,7 @@ class timedelta(std_datetime.timedelta):
         return r
 
     def __str__(self):
+        """Return str(self)."""
         s = super().__str__()
         if self.femtoseconds or self.yoctoseconds:
             if not self.microseconds:
@@ -187,38 +201,48 @@ class timedelta(std_datetime.timedelta):
     # Comparison operators
 
     def __eq__(self, other):
+        """Return self==other."""
         if isinstance(other, std_datetime.timedelta):
             return _cmp(timedelta._as_tuple(self), timedelta._as_tuple(other)) == 0
         else:
             return False
 
     def __ne__(self, other):
+        """Return self!=other."""
         return not (self == other)
 
     def __lt__(self, other):
+        """Return self<other."""
         return self._cmp(other) < 0
 
     def __le__(self, other):
+        """Return self<=other."""
         return self._cmp(other) <= 0
 
     def __gt__(self, other):
+        """Return self>other."""
         return self._cmp(other) > 0
 
     def __ge__(self, other):
+        """Return self>=other."""
         return self._cmp(other) >= 0
 
     def __bool__(self):
+        """Return bool(self)."""
         return any(getattr(self, field) for field in _FIELD_NAMES)
 
     # Arithmetic operators
 
     def __pos__(self):
+        """Return +self."""
         return self
 
     def __abs__(self):
+        """Return abs(self)."""
         return -self if self.days < 0 else self
 
     def __add__(self, other):
+        """Return self+other."""
         if isinstance(other, std_datetime.timedelta):
             return timedelta(
                 **{field: getattr(self, field) + getattr(other, field, 0) for field in _FIELD_NAMES}
@@ -228,6 +252,7 @@ class timedelta(std_datetime.timedelta):
     __radd__ = __add__
 
     def __sub__(self, other):
+        """Return self-other."""
         if isinstance(other, std_datetime.timedelta):
             return timedelta(
                 **{field: getattr(self, field) - getattr(other, field, 0) for field in _FIELD_NAMES}
@@ -235,9 +260,11 @@ class timedelta(std_datetime.timedelta):
         return NotImplemented
 
     def __neg__(self):
+        """Return -self."""
         return timedelta(**{field: -(getattr(self, field)) for field in _FIELD_NAMES})
 
     def __mul__(self, other):
+        """Return self*other."""
         if isinstance(other, (int, float)):
             return timedelta(**{field: getattr(self, field) * other for field in _FIELD_NAMES})
         return NotImplemented
@@ -245,6 +272,7 @@ class timedelta(std_datetime.timedelta):
     __rmul__ = __mul__
 
     def __floordiv__(self, other):
+        """Return self//other."""
         if not isinstance(other, (int, std_datetime.timedelta)):
             return NotImplemented
 
@@ -254,6 +282,7 @@ class timedelta(std_datetime.timedelta):
         return timedelta(yoctoseconds=ys // other)
 
     def __truediv__(self, other):
+        """Return self/other."""
         if not isinstance(other, (int, float, std_datetime.timedelta)):
             return NotImplemented
 
@@ -262,11 +291,13 @@ class timedelta(std_datetime.timedelta):
         return timedelta(**{field: getattr(self, field) / other for field in _FIELD_NAMES})
 
     def __mod__(self, other):
+        """Return self%other."""
         if isinstance(other, std_datetime.timedelta):
             return timedelta(yoctoseconds=timedelta._as_ys(self) % timedelta._as_ys(other))
         return NotImplemented
 
     def __divmod__(self, other):
+        """Return divmod(self, other)."""
         if isinstance(other, std_datetime.timedelta):
             q, r = divmod(timedelta._as_ys(self), timedelta._as_ys(other))
             return q, timedelta(yoctoseconds=r)
@@ -275,6 +306,7 @@ class timedelta(std_datetime.timedelta):
     # Hash support
 
     def __hash__(self):
+        """Return hash(self)."""
         return hash(timedelta._as_tuple(self))
 
     # Pickle support
@@ -297,6 +329,7 @@ class timedelta(std_datetime.timedelta):
         )
 
     def __reduce__(self):
+        """Return object state for pickling."""
         return (self.__class__, self._getstate())
 
     # Helper methods
