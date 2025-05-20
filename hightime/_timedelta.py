@@ -41,6 +41,41 @@ class timedelta(std_datetime.timedelta):  # noqa: N801 - class name should use C
     """A timedelta represents a duration.
 
     This class extends :any:`datetime.timedelta` to support up to yoctosecond precision.
+
+    The constructor takes the same arguments as :any:`datetime.timedelta`, with the addition of
+    ``nanoseconds``, ``picoseconds``, ``femtoseconds``, ``attoseconds``, ``zeptoseconds``, and
+    ``yoctoseconds``.
+
+    >>> timedelta(days=1, seconds=2, microseconds=3,  # doctest: +NORMALIZE_WHITESPACE 
+    ... milliseconds=4, minutes=5, hours=6, weeks=7, nanoseconds=8, picoseconds=9, femtoseconds=10,
+    ... attoseconds=11, zeptoseconds=12, yoctoseconds=13)
+    hightime.timedelta(days=50, seconds=21902, microseconds=4003, femtoseconds=8009010,
+    yoctoseconds=11012013)
+    >>> timedelta(picoseconds=1e12)
+    hightime.timedelta(seconds=1)
+
+    .. note::
+       Performing math operations with floating point may reduce the precision of the result.
+    
+    For example, multiplying or dividing by the number of yoctoseconds in a second has the correct
+    result when it is expressed as an integer, and the wrong result when it is expressed as a float:
+
+    >>> timedelta(yoctoseconds=1) * 1_000_000_000_000_000_000_000_000
+    hightime.timedelta(seconds=1)
+    >>> timedelta(yoctoseconds=1) * 1e24
+    hightime.timedelta(microseconds=999999, femtoseconds=999999999, yoctoseconds=983222784)
+    >>> timedelta(seconds=1) // 1_000_000_000_000_000_000_000_000
+    hightime.timedelta(yoctoseconds=1)
+    >>> timedelta(seconds=1) / 1e24
+    hightime.timedelta()
+
+    Likewise, you can specify larger units as a float with a sub-microsecond value, but this may
+    reduce the precision of the result:
+
+    >>> timedelta(seconds=1e-15)
+    hightime.timedelta(femtoseconds=1)
+    >>> timedelta(seconds=1e-24)   # expected hightime.timedelta(yoctoseconds=1)
+    hightime.timedelta()
     """
 
     __slots__ = ("_femtoseconds", "_yoctoseconds")
@@ -62,12 +97,7 @@ class timedelta(std_datetime.timedelta):  # noqa: N801 - class name should use C
         zeptoseconds=0,
         yoctoseconds=0,
     ):
-        """Construct a timedelta object.
-
-        The arguments are the same as for :any:`datetime.timedelta`, with the addition of
-        ``nanoseconds``, ``picoseconds``, ``femtoseconds``, ``attoseconds``, ``zeptoseconds``, and
-        ``yoctoseconds``.
-        """
+        """Construct a timedelta object."""
         # Ideally we'd just take care of the sub-microsecond bits, but since the user
         # could specify larger units as a float with a sub-microsecond value,
         # datetime.datetime would round it. Therefore we're responsible for everything.

@@ -43,7 +43,6 @@ htmlhelp_basename = f"{project}doc"
 autoapi_options = list(autoapi.extension._DEFAULT_OPTIONS)
 autoapi_options.remove("private-members")  # note: remove this to include "_" members in docs
 autoapi_dirs = [root_path / "hightime"]
-autoapi_python_class_content = "both"
 autoapi_type = "python"
 autodoc_typehints = "description"
 

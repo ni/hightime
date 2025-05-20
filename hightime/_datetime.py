@@ -28,6 +28,16 @@ class datetime(std_datetime.datetime):  # noqa: N801 - class name should use Cap
     """A datetime represents a point in time.
 
     This class extends :any:`datetime.datetime` to support up to yoctosecond precision.
+
+    The constructor takes the same arguments as :any:`datetime.datetime`, with the addition of
+    ``femtosecond`` and ``yoctosecond``.
+
+    >>> new_years = datetime(year=1999, month=12, day=31, hour=23, minute=59, second=59,
+    ... microsecond=999999, femtosecond=999999999, yoctosecond=999999999)
+    >>> new_years
+    hightime.datetime(1999, 12, 31, 23, 59, 59, 999999, 999999999, 999999999)
+    >>> new_years + timedelta(yoctoseconds=1)
+    hightime.datetime(2000, 1, 1, 0, 0)
     """
 
     __slots__ = (
@@ -92,11 +102,7 @@ class datetime(std_datetime.datetime):  # noqa: N801 - class name should use Cap
 
     # See _new_impl for actual signature
     def __new__(cls, *args, **kwargs):
-        """Construct a datetime.
-
-        The arguments are the same as for :any:`datetime.datetime`, with the addition of
-        ``femtosecond`` and ``yoctosecond``.
-        """
+        """Construct a datetime."""
         if len(args) == 8 and "tzinfo" not in kwargs:
             # Allow the user to positionally specify timezone as the 8th param,
             # to be compatible with datetime.datetime
