@@ -71,4 +71,4 @@ warn_unused_configs = true
 
 [tool.pytest.ini_options]
 addopts = "--cov hightime -svv --strict --doctest-glob=README.md --doctest-modules"
-testpaths = ["hightime", "tests"]
+testpaths = ["hightime", "tests", "README.md"]
