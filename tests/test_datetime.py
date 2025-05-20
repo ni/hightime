@@ -6,8 +6,9 @@ import pickle
 from decimal import Decimal
 from typing import SupportsIndex, Type
 
-import hightime
 import pytest
+
+import hightime
 
 from .shorthands import datetime, timedelta
 

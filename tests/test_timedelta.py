@@ -5,8 +5,9 @@ import datetime as datetime
 import pickle
 from typing import Any
 
-import hightime
 import pytest
+
+import hightime
 
 from .shorthands import timedelta
 
