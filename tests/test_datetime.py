@@ -9,8 +9,7 @@ from typing import SupportsIndex, Type
 import pytest
 
 import hightime
-
-from .shorthands import datetime, timedelta
+from tests.shorthands import datetime, timedelta
 
 _SUBMICROSECOND_FIELDS = [
     "femtosecond",

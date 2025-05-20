@@ -8,8 +8,7 @@ from typing import Any
 import pytest
 
 import hightime
-
-from .shorthands import timedelta
+from tests.shorthands import timedelta
 
 
 @pytest.mark.parametrize(
