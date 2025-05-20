@@ -120,12 +120,12 @@ class datetime(std_datetime.datetime):  # noqa: N801 - class name should use Cap
 
     @property
     def femtosecond(self):
-        """The number of femtoseconds, between 0 and 999999999, inclusive."""
+        """femtosecond (0-999999999)"""  # noqa: D402, D403, D415, W505 - datetime properties have minimal docstrings
         return self._femtosecond
 
     @property
     def yoctosecond(self):
-        """The number of yoctoseconds, between 0 and 999999999, inclusive."""
+        """yoctosecond (0-999999999)"""  # noqa: D402, D403, D415, W505 - datetime properties have minimal docstrings
         return self._yoctosecond
 
     # Public classmethods

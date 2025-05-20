@@ -133,12 +133,12 @@ class timedelta(std_datetime.timedelta):  # noqa: N801 - class name should use C
 
     @property
     def femtoseconds(self):
-        """The number of femtoseconds, between 0 and 999999999, inclusive."""
+        """femtoseconds"""  # noqa: D403, D415 - timedelta properties have minimal docstrings
         return self._femtoseconds
 
     @property
     def yoctoseconds(self):
-        """The number of yoctoseconds, between 0 and 999999999, inclusive."""
+        """yoctoseconds"""  # noqa: D403, D415 - timedelta properties have minimal docstrings
         return self._yoctoseconds
 
     # Public methods
