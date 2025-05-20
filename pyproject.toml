@@ -69,5 +69,5 @@ warn_unreachable = true
 warn_unused_configs = true
 
 [tool.pytest.ini_options]
-addopts = "--cov hightime --cov-report term -svv --ignore=setup.py --strict --doctest-glob=README.md"
+addopts = "--cov hightime -svv --strict --doctest-glob=README.md"
 testpaths = ["hightime", "tests"]
