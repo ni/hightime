@@ -30,7 +30,6 @@ classifiers = [
     "Programming Language :: Python :: Implementation :: CPython",
     "Programming Language :: Python :: Implementation :: PyPy",
 ]
-packages = [{ include = "hightime" }]
 
 [tool.poetry.dependencies]
 python = "^3.9"
