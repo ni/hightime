@@ -46,7 +46,7 @@ class timedelta(std_datetime.timedelta):  # noqa: N801 - class name should use C
     ``nanoseconds``, ``picoseconds``, ``femtoseconds``, ``attoseconds``, ``zeptoseconds``, and
     ``yoctoseconds``.
 
-    >>> timedelta(days=1, seconds=2, microseconds=3,  # doctest: +NORMALIZE_WHITESPACE 
+    >>> timedelta(days=1, seconds=2, microseconds=3,  # doctest: +NORMALIZE_WHITESPACE
     ... milliseconds=4, minutes=5, hours=6, weeks=7, nanoseconds=8, picoseconds=9, femtoseconds=10,
     ... attoseconds=11, zeptoseconds=12, yoctoseconds=13)
     hightime.timedelta(days=50, seconds=21902, microseconds=4003, femtoseconds=8009010,
@@ -56,7 +56,7 @@ class timedelta(std_datetime.timedelta):  # noqa: N801 - class name should use C
 
     .. note::
        Performing math operations with floating point may reduce the precision of the result.
-    
+
     For example, multiplying or dividing by the number of yoctoseconds in a second has the correct
     result when it is expressed as an integer, and the wrong result when it is expressed as a float:
 
