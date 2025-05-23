@@ -60,11 +60,11 @@ class timedelta(std_datetime.timedelta):  # noqa: N801 - class name should use C
     For example, multiplying or dividing by the number of yoctoseconds in a second has the correct
     result when it is expressed as an integer, and the wrong result when it is expressed as a float:
 
-    >>> timedelta(yoctoseconds=1) * 1_000_000_000_000_000_000_000_000
+    >>> timedelta(yoctoseconds=1) * 10**24
     hightime.timedelta(seconds=1)
     >>> timedelta(yoctoseconds=1) * 1e24
     hightime.timedelta(microseconds=999999, femtoseconds=999999999, yoctoseconds=983222784)
-    >>> timedelta(seconds=1) // 1_000_000_000_000_000_000_000_000
+    >>> timedelta(seconds=1) // 10**24
     hightime.timedelta(yoctoseconds=1)
     >>> timedelta(seconds=1) / 1e24
     hightime.timedelta()
