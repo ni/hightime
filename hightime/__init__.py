@@ -2,19 +2,16 @@
 
 The classes defined in this package are:
 
-    datetime
+* :any:`hightime.datetime`: A subclass of :any:`datetime.datetime` with sub-microsecond
+  capabilities.
 
-        An impedance-matched subclass of datetime.datetime with sub-microsecond
-        capabilities.
+* :any:`hightime.timedelta`: A subclass of :any:`datetime.timedelta` with sub-microsecond
+  capabilities.
 
-    timedelta
-
-        An impedance-matched subclass of datetime.timedelta with sub-microsecond
-        capabilities.
-
-Please note that due to floating point arithmetic inaccuracies, the ability to specify
-sub-microsecond values in terms of much larger units (weeks, days, seconds) has been
-limited. For the exact limitation, please consult the various methods.
+.. note::
+   Due to floating point arithmetic inaccuracies, the ability to specify
+   sub-microsecond values in terms of much larger units (weeks, days, seconds) has been
+   limited. For the exact limitations, please consult the source code.
 """
 
 import datetime as _std_datetime

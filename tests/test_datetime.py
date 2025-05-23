@@ -6,10 +6,10 @@ import pickle
 from decimal import Decimal
 from typing import SupportsIndex, Type
 
-import hightime
 import pytest
 
-from .shorthands import datetime, timedelta
+import hightime
+from tests.shorthands import datetime, timedelta
 
 _SUBMICROSECOND_FIELDS = [
     "femtosecond",

@@ -5,10 +5,10 @@ import datetime as datetime
 import pickle
 from typing import Any
 
-import hightime
 import pytest
 
-from .shorthands import timedelta
+import hightime
+from tests.shorthands import timedelta
 
 
 @pytest.mark.parametrize(
