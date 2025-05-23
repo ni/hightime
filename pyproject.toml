@@ -1,0 +1,18 @@
+[tool.black]
+extend_exclude = '\.tox/|setup\.py'
+line-length = 100
+
+[tool.ni-python-styleguide]
+extend_exclude = '.tox/,setup.py'
+
+[tool.mypy]
+files = "hightime/,tests/"
+check_untyped_defs = true
+implicit_reexport = false
+warn_redundant_casts = true
+warn_unreachable = true
+warn_unused_configs = true
+
+[tool.pytest.ini_options]
+addopts = "--cov hightime --cov-report term -svv --ignore=setup.py --strict --doctest-glob=README.md"
+testpaths = ["hightime", "tests"]

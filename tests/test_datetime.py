@@ -2,17 +2,14 @@ from __future__ import annotations
 
 import copy
 import datetime as std_datetime
-from decimal import Decimal
 import pickle
+from decimal import Decimal
 from typing import SupportsIndex, Type
 
 import hightime
-
 import pytest
 
-from .shorthands import datetime
-from .shorthands import timedelta
-
+from .shorthands import datetime, timedelta
 
 _SUBMICROSECOND_FIELDS = [
     "femtosecond",
@@ -31,10 +28,14 @@ _ALL_FIELDS = [
 
 
 class IntLike(object):
+    """An object that supports conversion to int."""
+
     def __init__(self, value: int = 1):
+        """Initialize the IntLike object."""
         self.value = value
 
     def __index__(self) -> int:
+        """Return self converted to an integer."""
         return self.value
 
 
@@ -50,9 +51,7 @@ def test_datetime_isinstance() -> None:
 @pytest.mark.parametrize(
     "argvalue", ["1", 4.5, IntLike("1"), IntLike(4.5)]  # type: ignore[arg-type]
 )
-def test_datetime_arg_wrong_type(
-    argname: str, argvalue: float | int | SupportsIndex
-) -> None:
+def test_datetime_arg_wrong_type(argname: str, argvalue: float | int | SupportsIndex) -> None:
     with pytest.raises(TypeError):
         datetime(**{argname: argvalue})
 
@@ -72,9 +71,7 @@ def test_datetime_arg_wrong_type(
     ],
 )
 @pytest.mark.parametrize("argtype", [int, IntLike])
-def test_datetime_arg_wrong_value(
-    argname: str, smallest: int, biggest: int, argtype: Type
-) -> None:
+def test_datetime_arg_wrong_value(argname: str, smallest: int, biggest: int, argtype: Type) -> None:
     with pytest.raises(ValueError):
         datetime(**{argname: argtype(smallest - 1)})
 
@@ -113,8 +110,7 @@ def test_datetime_properties() -> None:
         ),
         (
             datetime(2020, 4, 21, tzinfo=tzinfo(hours=1)),
-            "2020, 4, 21, 0, 0, "
-            "tzinfo=datetime.timezone(datetime.timedelta(seconds=3600))",
+            "2020, 4, 21, 0, 0, " "tzinfo=datetime.timezone(datetime.timedelta(seconds=3600))",
         ),
         (
             datetime(1, 1, 1, ys=4, tzinfo=tzinfo(hours=-1)),
@@ -188,9 +184,7 @@ def test_datetime_repr(dt: hightime.datetime, middle_part: str) -> None:
         ),
     ],
 )
-def test_datetime_isoformat(
-    dt: hightime.datetime, expected: str, expected_tz: str
-) -> None:
+def test_datetime_isoformat(dt: hightime.datetime, expected: str, expected_tz: str) -> None:
     assert dt.isoformat() == expected + expected_tz
     assert dt.isoformat(sep="X") == expected.replace("T", "X") + expected_tz
 
@@ -442,13 +436,8 @@ def test_datetime_dst() -> None:
 
 def test_datetime_utcoffset() -> None:
     assert datetime().utcoffset() is None
-    assert (
-        datetime(tzinfo=std_datetime.timezone.utc).utcoffset()
-        == std_datetime.timedelta()
-    )
-    assert datetime(tzinfo=tzinfo(hours=1)).utcoffset() == std_datetime.timedelta(
-        hours=1
-    )
+    assert datetime(tzinfo=std_datetime.timezone.utc).utcoffset() == std_datetime.timedelta()
+    assert datetime(tzinfo=tzinfo(hours=1)).utcoffset() == std_datetime.timedelta(hours=1)
     assert datetime(
         tzinfo=std_datetime.timezone(hightime.timedelta(hours=1))
     ).utcoffset() == hightime.timedelta(hours=1)
@@ -469,6 +458,7 @@ def test_datetime_combine_type() -> None:
     )
 
 
+@pytest.mark.filterwarnings("ignore:.*utcnow.*is deprecated.*:DeprecationWarning")
 def test_datetime_utcnow_type() -> None:
     assert isinstance(hightime.datetime.utcnow(), hightime.datetime)
 
@@ -478,15 +468,12 @@ def test_datetime_now_type() -> None:
 
 
 def test_datetime_fromtimestamp_type() -> None:
-    assert isinstance(
-        hightime.datetime.fromtimestamp(1587500974.003), hightime.datetime
-    )
+    assert isinstance(hightime.datetime.fromtimestamp(1587500974.003), hightime.datetime)
 
 
+@pytest.mark.filterwarnings("ignore:.*utcfromtimestamp.*is deprecated.*:DeprecationWarning")
 def test_datetime_utcfromtimestamp_type() -> None:
-    assert isinstance(
-        hightime.datetime.utcfromtimestamp(1587500974.003), hightime.datetime
-    )
+    assert isinstance(hightime.datetime.utcfromtimestamp(1587500974.003), hightime.datetime)
 
 
 def test_datetime_astimezone_type() -> None:
@@ -538,9 +525,7 @@ def test_datetime_replace() -> None:
         ),
         (
             datetime(2020, 4, 21, 15, 29, 34, us=3000),
-            std_datetime.datetime(
-                2020, 4, 21, 15, 29, 34, microsecond=3000
-            ).timestamp(),
+            std_datetime.datetime(2020, 4, 21, 15, 29, 34, microsecond=3000).timestamp(),
         ),
         (
             datetime(2020, 4, 21, 15, 29, 34, us=30),

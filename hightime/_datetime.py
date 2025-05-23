@@ -6,21 +6,17 @@ import hightime
 
 
 # Mostly ripped from `datetime`'s
-def _checkArg(name, value):
+def _check_arg(name, value):
     if not isinstance(value, int):
         if isinstance(value, float):
             raise TypeError("integer argument expected, got float")
         try:
             value = value.__index__()
         except AttributeError:
-            raise TypeError(
-                "an integer is required (got type %s)" % type(value).__name__
-            ) from None
+            raise TypeError("an integer is required (got type %s)" % type(value).__name__) from None
         else:
             if not isinstance(value, int):
-                raise TypeError(
-                    "__index__ returned non-int (type %s)" % type(value).__name__
-                )
+                raise TypeError("__index__ returned non-int (type %s)" % type(value).__name__)
 
     if not 0 <= value <= 999999999:
         raise ValueError("{} must be in 0..999999999".format(name), value)
@@ -28,14 +24,19 @@ def _checkArg(name, value):
     return value
 
 
-class datetime(std_datetime.datetime):
+class datetime(std_datetime.datetime):  # noqa: N801 - class name should use CapWords convention
+    """A datetime represents a point in time.
+
+    This class extends :any:`datetime.datetime` to support up to yoctosecond precision.
+    """
+
     __slots__ = (
         "_femtosecond",
         "_yoctosecond",
     )
 
     @classmethod
-    def __new__impl__(
+    def _new_impl(
         cls,
         year,
         month=None,
@@ -52,11 +53,7 @@ class datetime(std_datetime.datetime):
         *,
         fold=0,
     ):
-        if (
-            isinstance(year, (bytes, str))
-            and len(year) == 18
-            and 1 <= ord(year[2:3]) & 0x7F <= 12
-        ):
+        if isinstance(year, (bytes, str)) and len(year) == 18 and 1 <= ord(year[2:3]) & 0x7F <= 12:
             # Pickle support
             if isinstance(year, str):
                 try:
@@ -87,14 +84,19 @@ class datetime(std_datetime.datetime):
             fold=fold,
         )
 
-        femtosecond = _checkArg("femtosecond", femtosecond)
-        yoctosecond = _checkArg("yoctosecond", yoctosecond)
+        femtosecond = _check_arg("femtosecond", femtosecond)
+        yoctosecond = _check_arg("yoctosecond", yoctosecond)
         self._femtosecond = femtosecond
         self._yoctosecond = yoctosecond
         return self
 
-    # See __new__impl__ for actual signature
+    # See _new_impl for actual signature
     def __new__(cls, *args, **kwargs):
+        """Construct a datetime.
+
+        The arguments are the same as for :any:`datetime.datetime`, with the addition of
+        ``femtosecond`` and ``yoctosecond``.
+        """
         if len(args) == 8 and "tzinfo" not in kwargs:
             # Allow the user to positionally specify timezone as the 8th param,
             # to be compatible with datetime.datetime
@@ -102,7 +104,7 @@ class datetime(std_datetime.datetime):
                 kwargs["tzinfo"] = args[-1]
                 args = args[:-1]
 
-        return cls.__new__impl__(*args, **kwargs)
+        return cls._new_impl(*args, **kwargs)
 
     # Public properties
 
@@ -118,41 +120,51 @@ class datetime(std_datetime.datetime):
 
     @property
     def femtosecond(self):
-        """femtosecond (0-999999999)"""
+        """femtosecond (0-999999999)"""  # noqa: D402, D403, D415, W505 - datetime properties have minimal docstrings
         return self._femtosecond
 
     @property
     def yoctosecond(self):
-        """yoctosecond (0-999999999)"""
+        """yoctosecond (0-999999999)"""  # noqa: D402, D403, D415, W505 - datetime properties have minimal docstrings
         return self._yoctosecond
 
     # Public classmethods
 
     @classmethod
     def fromtimestamp(cls, t, tz=None):
-        # NOTE: Does not support sub-microsecond values!
+        """Return a datetime corresponding to a POSIX timestamp with the provided time zone.
+
+        .. warning::
+            This method does not support sub-microsecond values.
+        """
         result = std_datetime.datetime.fromtimestamp(t, tz)
-        return cls._fromBase(result)
+        return cls._from_base(result)
 
     @classmethod
     def utcfromtimestamp(cls, t):
-        # NOTE: Does not support sub-microsecond values!
+        """Return a datetime corresponding to a POSIX timestamp in UTC.
+
+        .. warning::
+            This method does not support sub-microsecond values.
+        """
         result = std_datetime.datetime.utcfromtimestamp(t)
-        return cls._fromBase(result)
+        return cls._from_base(result)
 
     # Public methods
 
     def astimezone(self, tz=None):
+        """Return a copy of self converted to the specified time zone."""
         # astimezone doesn't always return type(self), so convert it back to a
         # hightime.datetime
         result = super().astimezone(tz)
         return (
             type(self)
-            ._fromBase(result)
+            ._from_base(result)
             .replace(femtosecond=self.femtosecond, yoctosecond=self.yoctosecond)
         )
 
     def isoformat(self, sep="T", timespec="auto"):
+        """Return a string representing the time in ISO 8601 format."""
         specs = OrderedDict(
             [
                 ("yoctoseconds", "{:06d}{:018d}"),
@@ -200,6 +212,7 @@ class datetime(std_datetime.datetime):
         *,
         fold=None,
     ):
+        """Return a copy of self with the specified fields replaced with the provided values."""
         if year is None:
             year = self.year
         if month is None:
@@ -239,7 +252,7 @@ class datetime(std_datetime.datetime):
     # String operators
 
     def __repr__(self):
-        """Convert to formal string, for repr()."""
+        """Return repr(self)."""
         s = "{}.{}".format(self.__class__.__module__, self.__class__.__qualname__)
 
         # We only expose subminute fields if they aren't 0
@@ -257,9 +270,7 @@ class datetime(std_datetime.datetime):
             )
         )
 
-        values = [self.year, self.month, self.day, self.hour, self.minute] + list(
-            subminute_fields
-        )
+        values = [self.year, self.month, self.day, self.hour, self.minute] + list(subminute_fields)
         s += "({}".format(", ".join(map(str, values)))
 
         if self.tzinfo is not None:
@@ -274,10 +285,9 @@ class datetime(std_datetime.datetime):
     # Comparison operators
 
     def __eq__(self, other):
+        """Return self==other."""
         if isinstance(other, std_datetime.datetime):
-            offset_type_mismatch = (
-                (self.utcoffset() is None) + (other.utcoffset() is None)
-            ) == 1
+            offset_type_mismatch = ((self.utcoffset() is None) + (other.utcoffset() is None)) == 1
             return not offset_type_mismatch and not bool(self - other)
         elif not isinstance(other, std_datetime.date):
             return NotImplemented
@@ -285,24 +295,29 @@ class datetime(std_datetime.datetime):
             return False
 
     def __ne__(self, other):
+        """Return self!=other."""
         return not (self == other)
 
     def __lt__(self, other):
+        """Return self<other."""
         return self._cmp(other) < 0
 
     def __le__(self, other):
+        """Return self<=other."""
         return self._cmp(other) <= 0
 
     def __gt__(self, other):
+        """Return self>other."""
         return self._cmp(other) > 0
 
     def __ge__(self, other):
+        """Return self>=other."""
         return self._cmp(other) >= 0
 
     # Arithmetic operators
 
     def __add__(self, other):
-        "Add a datetime and a timedelta."
+        """Return self+other."""
         if not isinstance(other, std_datetime.timedelta):
             return NotImplemented
 
@@ -339,7 +354,7 @@ class datetime(std_datetime.datetime):
     __radd__ = __add__
 
     def __sub__(self, other):
-        "Subtract two datetimes, or a datetime and a timedelta."
+        """Return self-other."""
         if not isinstance(other, std_datetime.datetime):
             if isinstance(other, std_datetime.timedelta):
                 return self + -other
@@ -371,6 +386,7 @@ class datetime(std_datetime.datetime):
     # Hash support
 
     def __hash__(self):
+        """Return hash(self)."""
         t = self.replace(fold=0) if getattr(self, "fold", 0) else self
         offset = t.utcoffset()
         if offset is None:
@@ -409,9 +425,7 @@ class datetime(std_datetime.datetime):
     def _hightime_getstate(self, protocol=3):
         reduce_value = super().__reduce_ex__(protocol)
         if not isinstance(reduce_value, tuple):
-            raise TypeError(
-                f"expected __reduce_ex__ to return tuple, not '{type(reduce_value)}'"
-            )
+            raise TypeError(f"expected __reduce_ex__ to return tuple, not '{type(reduce_value)}'")
         ctor_args = reduce_value[1]
         if not isinstance(ctor_args, tuple):
             raise TypeError(f"expected ctor args to be tuple, not '{type(ctor_args)}'")
@@ -430,9 +444,11 @@ class datetime(std_datetime.datetime):
         return (basestate,) + ctor_args[1:]
 
     def __reduce_ex__(self, protocol):
+        """Return object state for pickling."""
         return (self.__class__, self._hightime_getstate(protocol))
 
     def __reduce__(self):
+        """Return object state for pickling."""
         return self.__reduce_ex__(2)
 
     # Helper methods
@@ -447,13 +463,11 @@ class datetime(std_datetime.datetime):
             return NotImplemented
         else:
             raise TypeError(
-                "can't compare '{}' to '{}'".format(
-                    type(self).__name__, type(other).__name__
-                )
+                "can't compare '{}' to '{}'".format(type(self).__name__, type(other).__name__)
             )
 
     @classmethod
-    def _fromBase(cls, base_datetime):
+    def _from_base(cls, base_datetime):
         return cls(
             year=base_datetime.year,
             month=base_datetime.month,

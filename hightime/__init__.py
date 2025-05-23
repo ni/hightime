@@ -1,6 +1,4 @@
-"""hightime
-
-This package extends the built-in datetime types to allow for sub-microsecond values.
+"""This package extends the built-in datetime types to support sub-microsecond values.
 
 The classes defined in this package are:
 
@@ -20,7 +18,6 @@ limited. For the exact limitation, please consult the various methods.
 """
 
 import datetime as _std_datetime
-
 
 from hightime._datetime import datetime
 from hightime._timedelta import timedelta

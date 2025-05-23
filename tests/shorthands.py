@@ -1,3 +1,5 @@
+"""Constructor wrappers that support shorthands for keyword arguments."""
+
 from typing import Any
 
 import hightime
@@ -33,9 +35,8 @@ def _replace(kwargs: dict[str, Any], *, plural: bool) -> dict[str, Any]:
 def datetime(*args: Any, **kwargs: Any) -> hightime.datetime:
     """Instantiate a hightime.datetime with some shorthands.
 
-    Allows unit shorthand kwargs as well as passing year/month/day if none are provided
+    Allows unit shorthand kwargs as well as passing year/month/day if none are provided.
     """
-
     _replace(kwargs, plural=False)
     if len(args) < 3:
         kwargs.setdefault("day", 21)
@@ -47,7 +48,6 @@ def datetime(*args: Any, **kwargs: Any) -> hightime.datetime:
 
 
 def timedelta(*args: Any, **kwargs: Any) -> hightime.timedelta:
-    """Instantiate a hightime.timedelta, allowing unit shorthand kwargs"""
-
+    """Instantiate a hightime.timedelta, allowing unit shorthand kwargs."""
     _replace(kwargs, plural=True)
     return hightime.timedelta(*args, **kwargs)
