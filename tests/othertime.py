@@ -1,3 +1,5 @@
+"""Another set of time types for testing operators."""
+
 from __future__ import annotations
 
 import datetime
