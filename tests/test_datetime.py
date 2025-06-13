@@ -4,11 +4,12 @@ import copy
 import datetime as std_datetime
 import pickle
 from decimal import Decimal
-from typing import SupportsIndex, Type
+from typing import Any, SupportsIndex, Type
 
 import pytest
 
 import hightime
+from tests.othertime import OtherDateTime
 from tests.shorthands import datetime, timedelta
 
 _SUBMICROSECOND_FIELDS = [
@@ -318,6 +319,75 @@ def test_datetime_comparison_tzinfo_mismatch() -> None:
         without_tz >= with_tz
     with pytest.raises(TypeError):
         with_tz <= without_tz
+
+
+@pytest.mark.parametrize(
+    "dt",
+    [datetime(), datetime(d=1)],
+)
+@pytest.mark.parametrize(
+    "other",
+    [False, True, 0, 1, (0, 0, 0, 0, 0), (1, 0, 0, 0, 0), "", [], ()],
+)
+def test_datetime_comparison_unrelated_type(dt: hightime.datetime, other: Any) -> None:
+    assert not (dt == other)
+    assert not (other == dt)
+    assert dt != other
+    assert other != dt
+
+    with pytest.raises(TypeError):
+        assert dt < other
+    with pytest.raises(TypeError):
+        assert other < dt
+
+    with pytest.raises(TypeError):
+        assert dt <= other
+    with pytest.raises(TypeError):
+        assert other <= dt
+
+    with pytest.raises(TypeError):
+        assert dt > other
+    with pytest.raises(TypeError):
+        assert other > dt
+
+    with pytest.raises(TypeError):
+        assert dt >= other
+    with pytest.raises(TypeError):
+        assert other >= dt
+
+
+@pytest.mark.parametrize(
+    "left, right, eq, lt",
+    [
+        (datetime(2020, 4, 21), OtherDateTime(datetime(2020, 4, 21).timestamp()), True, False),
+        (datetime(2020, 4, 21), OtherDateTime(datetime(2020, 4, 22).timestamp()), False, True),
+        (OtherDateTime(datetime(2020, 4, 21).timestamp()), datetime(2020, 4, 21), True, False),
+        (OtherDateTime(datetime(2020, 4, 21).timestamp()), datetime(2020, 4, 22), False, True),
+    ],
+)
+def test_datetime_comparison_compatible_type(
+    left: hightime.datetime | OtherDateTime,
+    right: hightime.datetime | OtherDateTime,
+    eq: bool,
+    lt: bool,
+) -> None:
+    assert (left == right) == eq
+    assert (right == left) == eq
+
+    assert (left != right) == (not eq)
+    assert (right != left) == (not eq)
+
+    assert (left < right) == (lt and not eq)
+    assert (right > left) == (lt and not eq)
+
+    assert (left <= right) == (lt or eq)
+    assert (right >= left) == (lt or eq)
+
+    assert (left > right) == (not lt and not eq)
+    assert (right < left) == (not lt and not eq)
+
+    assert (left >= right) == (not lt or eq)
+    assert (right <= left) == (not lt or eq)
 
 
 @pytest.mark.parametrize(
