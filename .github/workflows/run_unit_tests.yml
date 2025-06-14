@@ -35,7 +35,7 @@ jobs:
       - name: Display installed dependency versions
         run: poetry run pip list
       - name: Run unit tests and code coverage
-        run: poetry run pytest ./tests/unit -v --cov=hightime --junitxml=test_results/hightime-${{ matrix.os }}-py${{ matrix.python-version }}.xml
+        run: poetry run pytest ./tests -v --cov=hightime --junitxml=test_results/hightime-${{ matrix.os }}-py${{ matrix.python-version }}.xml
       - name: Upload test results
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
