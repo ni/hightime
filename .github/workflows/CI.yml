@@ -1,0 +1,30 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+      - 'releases/**'
+  workflow_call:
+  workflow_dispatch:
+
+jobs:
+  check_hightime:
+    name: Check hightime
+    uses: ./.github/workflows/check_hightime.yml
+  check_docs:
+    name: Check docs
+    uses: ./.github/workflows/check_docs.yml
+  run_unit_tests:
+    name: Run unit tests
+    uses: ./.github/workflows/run_unit_tests.yml
+    needs: [check_hightime]
+  report_test_results:
+    name: Report test results
+    uses: ./.github/workflows/report_test_results.yml
+    needs: [run_unit_tests]
+    if: always()
+    permissions:
+      contents: read
+      checks: write
+      pull-requests: write
