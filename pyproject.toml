@@ -45,8 +45,11 @@ m2r2 = ">=0.3.2"
 toml = ">=0.10.2"
 
 [tool.poetry.group.lint.dependencies]
+bandit = { version = ">=1.7", extras = ["toml"] }
 ni-python-styleguide = ">=0.4.1"
 mypy = ">=1.0"
+pyright = { version = ">=1.1.400", extras = ["nodejs"] }
+
 
 [tool.poetry.group.test.dependencies]
 pytest = ">=7.2"
@@ -71,3 +74,11 @@ warn_unused_configs = true
 [tool.pytest.ini_options]
 addopts = "--cov hightime -svv --strict --doctest-glob=README.md --doctest-modules"
 testpaths = ["hightime", "tests", "README.md"]
+
+[tool.bandit]
+skips = [
+  "B101", # assert_used
+]
+
+[tool.pyright]
+include = ["hightime/", "tests/"]

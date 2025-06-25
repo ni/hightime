@@ -1,0 +1,34 @@
+name: Check docs
+
+on:
+  workflow_call:
+  workflow_dispatch:
+
+jobs:
+  check_docs:
+    name: Check docs
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repo
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+      - name: Set up Python
+        uses: ni/python-actions/setup-python@49cd7a9a4098c459b90ba97e8e56bf5cd80997bb # v0.4.0
+        id: setup-python
+      - name: Set up Poetry
+        uses: ni/python-actions/setup-poetry@49cd7a9a4098c459b90ba97e8e56bf5cd80997bb # v0.4.0
+      - name: Check for lock changes
+        run: poetry check --lock
+      - name: Cache virtualenv (with docs)
+        uses: actions/cache@5a3ec84eff668545956fd18022155c47e93e2684 # v4.2.3
+        with:
+          path: .venv
+          key: hightime-with-docs-${{ runner.os }}-py${{ steps.setup-python.outputs.python-version }}-${{ hashFiles('poetry.lock') }}
+      - name: Install hightime (with docs)
+        run: poetry install -v --only main,docs
+      - name: Generate docs
+        run:  poetry run sphinx-build docs docs/_build -b html -W
+      - name: Upload docs artifact
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: hightime-docs
+          path: docs/_build/
