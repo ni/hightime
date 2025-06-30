@@ -295,10 +295,10 @@ class datetime(std_datetime.datetime):  # noqa: N801 - class name should use Cap
         if isinstance(other, std_datetime.datetime):
             offset_type_mismatch = ((self.utcoffset() is None) + (other.utcoffset() is None)) == 1
             return not offset_type_mismatch and not bool(self - other)
-        elif not isinstance(other, std_datetime.date):
-            return NotImplemented
-        else:
+        elif isinstance(other, std_datetime.date):
             return False
+        else:
+            return NotImplemented
 
     def __ne__(self, other):
         """Return self!=other."""
@@ -306,19 +306,31 @@ class datetime(std_datetime.datetime):  # noqa: N801 - class name should use Cap
 
     def __lt__(self, other):
         """Return self<other."""
-        return self._cmp(other) < 0
+        result = self._cmp(other)
+        if result is NotImplemented:
+            return NotImplemented
+        return result < 0
 
     def __le__(self, other):
         """Return self<=other."""
-        return self._cmp(other) <= 0
+        result = self._cmp(other)
+        if result is NotImplemented:
+            return NotImplemented
+        return result <= 0
 
     def __gt__(self, other):
         """Return self>other."""
-        return self._cmp(other) > 0
+        result = self._cmp(other)
+        if result is NotImplemented:
+            return NotImplemented
+        return result > 0
 
     def __ge__(self, other):
         """Return self>=other."""
-        return self._cmp(other) >= 0
+        result = self._cmp(other)
+        if result is NotImplemented:
+            return NotImplemented
+        return result >= 0
 
     # Arithmetic operators
 
@@ -465,12 +477,12 @@ class datetime(std_datetime.datetime):  # noqa: N801 - class name should use Cap
             if diff.days < 0:
                 return -1
             return diff and 1 or 0
-        elif not isinstance(other, std_datetime.date):
-            return NotImplemented
-        else:
+        elif isinstance(other, std_datetime.date):
             raise TypeError(
                 "can't compare '{}' to '{}'".format(type(self).__name__, type(other).__name__)
             )
+        else:
+            return NotImplemented
 
     @classmethod
     def _from_base(cls, base_datetime):
