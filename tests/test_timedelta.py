@@ -8,6 +8,7 @@ from typing import Any
 import pytest
 
 import hightime
+from tests.othertime import OtherTimeDelta
 from tests.shorthands import timedelta
 
 
@@ -325,6 +326,40 @@ def test_timedelta_comparison_unrelated_type(td: hightime.timedelta, other: Any)
         assert td >= other
     with pytest.raises(TypeError):
         assert other >= td
+
+
+@pytest.mark.parametrize(
+    "left, right, eq, lt",
+    [
+        (timedelta(s=1), OtherTimeDelta(1.0), True, False),
+        (timedelta(s=1), OtherTimeDelta(2.0), False, True),
+        (OtherTimeDelta(1.0), timedelta(s=1), True, False),
+        (OtherTimeDelta(1.0), timedelta(s=2), False, True),
+    ],
+)
+def test_timedelta_comparison_compatible_type(
+    left: hightime.timedelta | OtherTimeDelta,
+    right: hightime.timedelta | OtherTimeDelta,
+    eq: bool,
+    lt: bool,
+) -> None:
+    assert (left == right) == eq
+    assert (right == left) == eq
+
+    assert (left != right) == (not eq)
+    assert (right != left) == (not eq)
+
+    assert (left < right) == (lt and not eq)
+    assert (right > left) == (lt and not eq)
+
+    assert (left <= right) == (lt or eq)
+    assert (right >= left) == (lt or eq)
+
+    assert (left > right) == (not lt and not eq)
+    assert (right < left) == (not lt and not eq)
+
+    assert (left >= right) == (not lt or eq)
+    assert (right <= left) == (not lt or eq)
 
 
 def test_timedelta_bool() -> None:

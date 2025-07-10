@@ -232,10 +232,10 @@ class timedelta(std_datetime.timedelta):  # noqa: N801 - class name should use C
 
     def __eq__(self, other):
         """Return self==other."""
-        if isinstance(other, std_datetime.timedelta):
-            return _cmp(timedelta._as_tuple(self), timedelta._as_tuple(other)) == 0
-        else:
-            return False
+        result = self._cmp(other)
+        if result is NotImplemented:
+            return NotImplemented
+        return result == 0
 
     def __ne__(self, other):
         """Return self!=other."""
@@ -243,19 +243,31 @@ class timedelta(std_datetime.timedelta):  # noqa: N801 - class name should use C
 
     def __lt__(self, other):
         """Return self<other."""
-        return self._cmp(other) < 0
+        result = self._cmp(other)
+        if result is NotImplemented:
+            return NotImplemented
+        return result < 0
 
     def __le__(self, other):
         """Return self<=other."""
-        return self._cmp(other) <= 0
+        result = self._cmp(other)
+        if result is NotImplemented:
+            return NotImplemented
+        return result <= 0
 
     def __gt__(self, other):
         """Return self>other."""
-        return self._cmp(other) > 0
+        result = self._cmp(other)
+        if result is NotImplemented:
+            return NotImplemented
+        return result > 0
 
     def __ge__(self, other):
         """Return self>=other."""
-        return self._cmp(other) >= 0
+        result = self._cmp(other)
+        if result is NotImplemented:
+            return NotImplemented
+        return result >= 0
 
     def __bool__(self):
         """Return bool(self)."""
@@ -380,6 +392,4 @@ class timedelta(std_datetime.timedelta):  # noqa: N801 - class name should use C
         if isinstance(other, std_datetime.timedelta):
             return _cmp(timedelta._as_tuple(self), timedelta._as_tuple(other))
         else:
-            raise TypeError(
-                "can't compare '{}' to '{}'".format(type(self).__name__, type(other).__name__)
-            )
+            return NotImplemented
