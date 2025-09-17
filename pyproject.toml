@@ -73,6 +73,7 @@ line-length = 100
 
 [tool.ni-python-styleguide]
 extend_exclude = '.tox/,setup.py'
+application-import-names = "hightime"
 
 [tool.mypy]
 files = "hightime/,tests/"
