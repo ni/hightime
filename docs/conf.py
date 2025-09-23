@@ -22,7 +22,7 @@ pyproj_file = root_path / "pyproject.toml"
 proj_config = toml.loads(pyproj_file.read_text())
 
 
-project = proj_config["tool"]["poetry"]["name"]
+project = proj_config["project"]["name"]
 company = "National Instruments"
 copyright = f"2020-%Y, {company}"
 
@@ -31,9 +31,9 @@ copyright = f"2020-%Y, {company}"
 # |version| and |release|, also used in various other places throughout the
 # built documents.
 #
-version = proj_config["tool"]["poetry"]["version"]
+version = proj_config["project"]["version"]
 release = ".".join(version.split(".")[:2])
-description = proj_config["tool"]["poetry"]["description"]
+description = proj_config["project"]["description"]
 
 
 htmlhelp_basename = f"{project}doc"
