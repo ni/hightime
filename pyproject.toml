@@ -3,7 +3,7 @@ name = "hightime"
 description = "Hightime Python API"
 license = "MIT"
 keywords = ["hightime"]
-version = "1.0.1.dev0"
+version = "1.1.0.dev0"
 classifiers = [
     "Development Status :: 5 - Production/Stable",
     "Intended Audience :: Developers",
