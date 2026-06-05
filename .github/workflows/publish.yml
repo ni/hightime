@@ -30,6 +30,8 @@ env:
       }
     }
 
+permissions: {}
+
 jobs:
   check_hightime:
     name: Check hightime
