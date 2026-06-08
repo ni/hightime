@@ -8,6 +8,8 @@ on:
   workflow_call:
   workflow_dispatch:
 
+permissions: {}
+
 jobs:
   check_hightime:
     name: Check hightime
@@ -15,6 +17,11 @@ jobs:
   check_docs:
     name: Check docs
     uses: ./.github/workflows/check_docs.yml
+  check_workflows:
+    name: Check workflows
+    uses: ./.github/workflows/check_workflows.yml
+    permissions:
+      security-events: write
   run_unit_tests:
     name: Run unit tests
     uses: ./.github/workflows/run_unit_tests.yml
