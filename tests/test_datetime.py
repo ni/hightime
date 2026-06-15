@@ -86,6 +86,17 @@ def test_datetime_tzinfo_as_femtoseconds() -> None:
     assert dt.tzinfo == std_datetime.timezone.utc
 
 
+def test_datetime_now_with_zoneinfo_tz() -> None:
+    # Regression for https://github.com/ni/hightime/issues/126: datetime.now
+    # forwards a ZoneInfo instance through __new__'s positional fast-path; the
+    # check must accept any tzinfo subclass, not only datetime.timezone.
+    from zoneinfo import ZoneInfo
+
+    tz = ZoneInfo("America/Chicago")
+    dt = hightime.datetime.now(tz=tz)
+    assert dt.tzinfo is tz
+
+
 def test_datetime_properties() -> None:
     dt = datetime(**{field: index + 1 for index, field in enumerate(_ALL_FIELDS)})
     for index, field in enumerate(_ALL_FIELDS):
