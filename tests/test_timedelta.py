@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import copy
-import datetime as datetime
+import datetime
 import pickle
 from typing import Any
 
