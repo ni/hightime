@@ -129,7 +129,7 @@ def test_datetime_properties() -> None:
     ],
 )
 def test_datetime_repr(dt: hightime.datetime, middle_part: str) -> None:
-    import datetime as datetime  # noqa: F401 - for tzinfo eval
+    import datetime  # noqa: F401 - for tzinfo eval
 
     assert repr(dt) == "hightime.datetime({})".format(middle_part)
     assert dt == eval(repr(dt))
