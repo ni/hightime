@@ -1,4 +1,5 @@
 import datetime as std_datetime
+import re
 from collections import OrderedDict
 from itertools import dropwhile
 
@@ -198,10 +199,18 @@ class datetime(std_datetime.datetime):  # noqa: N801 - class name should use Cap
             value //= 1000
 
         fmt = specs[timespec]
-        iso_strs = super().isoformat(sep).split("+")
-        iso_strs[0] = iso_strs[0].split(".")[0]
-        iso_strs[0] += "." + fmt.format(self.microsecond, value)
-        return "+".join(iso_strs)
+        iso_str = super().isoformat(sep)
+        # Split off the UTC offset suffix (e.g. "+05:30", "-01:00", "+05:30:30").
+        # A simple split on "+" would silently drop negative-offset timezones.
+        tz_match = re.search(r"[+-]\d{2}:\d{2}(?::\d{2})?$", iso_str)
+        if tz_match:
+            tz_suffix = iso_str[tz_match.start() :]
+            iso_str = iso_str[: tz_match.start()]
+        else:
+            tz_suffix = ""
+        iso_str = iso_str.split(".")[0]
+        iso_str += "." + fmt.format(self.microsecond, value)
+        return iso_str + tz_suffix
 
     def replace(
         self,
