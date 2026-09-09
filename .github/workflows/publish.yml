@@ -45,18 +45,18 @@ jobs:
     needs: [check_hightime, check_docs]
     steps:
       - name: Check out repo
-        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
         with:
           persist-credentials: false
       - name: Set up Python
-        uses: ni/python-actions/setup-python@a2554c7e5680982d3355677b2290e48b60678744 # v0.8.0
+        uses: ni/python-actions/setup-python@dee640bba235ae28fdc6b7337c643bd06358ae90 # v0.9.0
       - name: Set up Poetry
-        uses: ni/python-actions/setup-poetry@a2554c7e5680982d3355677b2290e48b60678744 # v0.8.0
+        uses: ni/python-actions/setup-poetry@dee640bba235ae28fdc6b7337c643bd06358ae90 # v0.9.0
         with:
           use-cache: false
       - name: Check project version
         if: github.event_name == 'release'
-        uses: ni/python-actions/check-project-version@a2554c7e5680982d3355677b2290e48b60678744 # v0.8.0
+        uses: ni/python-actions/check-project-version@dee640bba235ae28fdc6b7337c643bd06358ae90 # v0.9.0
       - name: Build distribution packages
         run: poetry build
       - name: Upload build artifacts
@@ -83,7 +83,7 @@ jobs:
         path: dist/
     - run: ls -lR
     - name: Upload to ${{ env.environment }}
-      uses: pypa/gh-action-pypi-publish@cef221092ed1bacb1cc03d23a2d87d1d172e277b # v1.14.0
+      uses: pypa/gh-action-pypi-publish@dc37677b2e1c63e2034f94d8a5b11f265b73ba33 # v1.14.2
       with:
         repository-url: ${{ fromJson(env.environment-info)[env.environment].upload-url }} 
   update_version:
@@ -95,14 +95,14 @@ jobs:
       pull-requests: write
     steps:
       - name: Check out repo
-        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
         with:
           persist-credentials: false
       - name: Set up Python
-        uses: ni/python-actions/setup-python@a2554c7e5680982d3355677b2290e48b60678744 # v0.8.0
+        uses: ni/python-actions/setup-python@dee640bba235ae28fdc6b7337c643bd06358ae90 # v0.9.0
       - name: Set up Poetry
-        uses: ni/python-actions/setup-poetry@a2554c7e5680982d3355677b2290e48b60678744 # v0.8.0
+        uses: ni/python-actions/setup-poetry@dee640bba235ae28fdc6b7337c643bd06358ae90 # v0.9.0
         with:
           use-cache: false
       - name: Update project version
-        uses: ni/python-actions/update-project-version@a2554c7e5680982d3355677b2290e48b60678744 # v0.8.0
+        uses: ni/python-actions/update-project-version@dee640bba235ae28fdc6b7337c643bd06358ae90 # v0.9.0
