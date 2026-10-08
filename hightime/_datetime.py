@@ -106,7 +106,7 @@ class datetime(std_datetime.datetime):  # noqa: N801 - class name should use Cap
         if len(args) == 8 and "tzinfo" not in kwargs:
             # Allow the user to positionally specify timezone as the 8th param,
             # to be compatible with datetime.datetime
-            if isinstance(args[-1], (std_datetime.timezone, type(None))):
+            if isinstance(args[-1], (std_datetime.tzinfo, type(None))):
                 kwargs["tzinfo"] = args[-1]
                 args = args[:-1]
 

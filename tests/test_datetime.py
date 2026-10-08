@@ -5,6 +5,7 @@ import datetime as std_datetime
 import pickle
 from decimal import Decimal
 from typing import Any, SupportsIndex, Type
+from zoneinfo import ZoneInfo
 
 import pytest
 
@@ -537,6 +538,15 @@ def test_datetime_now_type() -> None:
     assert isinstance(hightime.datetime.now(), hightime.datetime)
 
 
+def test_datetime_now_with_zoneinfo() -> None:
+    tz = ZoneInfo("America/Chicago")
+
+    dt = hightime.datetime.now(tz=tz)
+
+    assert isinstance(dt, hightime.datetime)
+    assert dt.tzinfo is tz
+
+
 def test_datetime_fromtimestamp_type() -> None:
     assert isinstance(hightime.datetime.fromtimestamp(1587500974.003), hightime.datetime)
 
@@ -550,6 +560,15 @@ def test_datetime_astimezone_type() -> None:
     assert isinstance(
         datetime(tzinfo=tzinfo(hours=2)).astimezone(tzinfo(hours=1)), hightime.datetime
     )
+
+
+def test_datetime_astimezone_with_zoneinfo() -> None:
+    tz = ZoneInfo("America/Chicago")
+
+    dt = hightime.datetime(2026, 1, 1, tzinfo=std_datetime.timezone.utc).astimezone(tz)
+
+    assert isinstance(dt, hightime.datetime)
+    assert dt.tzinfo is tz
 
 
 def test_datetime_replace() -> None:
