@@ -167,11 +167,10 @@ def test_datetime_repr(dt: hightime.datetime, middle_part: str) -> None:
             "0001-01-01T00:00:00.000000000000000000000040",
             "+01:00",
         ),
-        pytest.param(
+        (
             datetime(1, 1, 1, ys=40, tzinfo=tzinfo(hours=-1)),
             "0001-01-01T00:00:00.000000000000000000000040",
             "-01:00",
-            marks=pytest.mark.xfail(reason="https://github.com/ni/hightime/issues/52"),
         ),
         (
             datetime(1, 1, 1, ys=40, fold=1),
