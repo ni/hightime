@@ -19,7 +19,7 @@ def _check_arg(name, value):
                 raise TypeError("__index__ returned non-int (type %s)" % type(value).__name__)
 
     if not 0 <= value <= 999999999:
-        raise ValueError("{} must be in 0..999999999".format(name), value)
+        raise ValueError(f"{name} must be in 0..999999999", value)
 
     return value
 
@@ -259,7 +259,7 @@ class datetime(std_datetime.datetime):  # noqa: N801 - class name should use Cap
 
     def __repr__(self):
         """Return repr(self)."""
-        s = "{}.{}".format(self.__class__.__module__, self.__class__.__qualname__)
+        s = f"{self.__class__.__module__}.{self.__class__.__qualname__}"
 
         # We only expose subminute fields if they aren't 0
         subminute_fields = reversed(
@@ -280,7 +280,7 @@ class datetime(std_datetime.datetime):  # noqa: N801 - class name should use Cap
         s += "({}".format(", ".join(map(str, values)))
 
         if self.tzinfo is not None:
-            s += ", tzinfo={!r}".format(self.tzinfo)
+            s += f", tzinfo={self.tzinfo!r}"
         if getattr(self, "fold", 0):
             s += ", fold=1"
         s += ")"
@@ -478,9 +478,7 @@ class datetime(std_datetime.datetime):  # noqa: N801 - class name should use Cap
                 return -1
             return diff and 1 or 0
         elif isinstance(other, std_datetime.date):
-            raise TypeError(
-                "can't compare '{}' to '{}'".format(type(self).__name__, type(other).__name__)
-            )
+            raise TypeError(f"can't compare '{type(self).__name__}' to '{type(other).__name__}'")
         else:
             return NotImplemented
 

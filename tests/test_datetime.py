@@ -4,7 +4,7 @@ import copy
 import datetime as std_datetime
 import pickle
 from decimal import Decimal
-from typing import Any, SupportsIndex, Type
+from typing import Any, SupportsIndex
 from zoneinfo import ZoneInfo
 
 import pytest
@@ -29,7 +29,7 @@ _ALL_FIELDS = [
 ] + _SUBMICROSECOND_FIELDS
 
 
-class IntLike(object):
+class IntLike:
     """An object that supports conversion to int."""
 
     def __init__(self, value: int = 1):
@@ -73,7 +73,7 @@ def test_datetime_arg_wrong_type(argname: str, argvalue: float | int | SupportsI
     ],
 )
 @pytest.mark.parametrize("argtype", [int, IntLike])
-def test_datetime_arg_wrong_value(argname: str, smallest: int, biggest: int, argtype: Type) -> None:
+def test_datetime_arg_wrong_value(argname: str, smallest: int, biggest: int, argtype: type) -> None:
     with pytest.raises(ValueError):
         datetime(**{argname: argtype(smallest - 1)})
 
@@ -132,7 +132,7 @@ def test_datetime_properties() -> None:
 def test_datetime_repr(dt: hightime.datetime, middle_part: str) -> None:
     import datetime  # noqa: F401 - for tzinfo eval
 
-    assert repr(dt) == "hightime.datetime({})".format(middle_part)
+    assert repr(dt) == f"hightime.datetime({middle_part})"
     assert dt == eval(repr(dt))
 
 
@@ -228,7 +228,7 @@ def test_datetime_isoformat(dt: hightime.datetime, expected: str, expected_tz: s
 )
 def test_datetime_str(dt: hightime.datetime, expected: str) -> None:
     assert str(dt) == expected
-    assert "{}".format(dt) == expected
+    assert f"{dt}" == expected
 
 
 @pytest.mark.parametrize(
