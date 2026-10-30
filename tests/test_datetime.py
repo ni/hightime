@@ -4,7 +4,7 @@ import copy
 import datetime as std_datetime
 import pickle
 from decimal import Decimal
-from typing import Any, SupportsIndex, Type
+from typing import Any, SupportsIndex
 from zoneinfo import ZoneInfo
 
 import pytest
