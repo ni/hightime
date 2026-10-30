@@ -37,7 +37,12 @@ jobs:
       - name: Install hightime
         run: poetry install -v
       - name: Display installed dependency versions
-        run: poetry run pip list
+        run: |
+          # Use importlib instead of assuming that the project venv contains an up-to-date pip.
+          import importlib.metadata
+          for dist in sorted(importlib.metadata.Distribution.discover(), key=lambda d: d.name):
+            print(f"{dist.name}: {dist.version}")
+        shell: poetry run python {0}
       - name: Run unit tests and code coverage
         run: poetry run pytest ./tests -v --cov=hightime --junitxml=test_results/hightime-${{ matrix.os }}-py${{ matrix.python-version }}.xml
       - name: Upload test results
