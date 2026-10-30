@@ -13,8 +13,6 @@ classifiers = [
     "Operating System :: Microsoft :: Windows",
     "Operating System :: POSIX",
     "Programming Language :: Python :: 3",
-    "Programming Language :: Python :: 3.9",
-    "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
     "Programming Language :: Python :: 3.13",
@@ -25,7 +23,7 @@ classifiers = [
 readme = "README.md"
 authors = [{name = "NI", email = "opensource@ni.com"}]
 maintainers = [{name = "NI", email = "opensource@ni.com"}]
-requires-python = '>=3.9,<4.0'
+requires-python = '>=3.11,<4.0'
 dependencies = []
 
 [project.urls]
