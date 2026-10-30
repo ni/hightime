@@ -2012,4 +2012,4 @@ python-discovery = ">=1.4"
 [metadata]
 lock-version = "2.1"
 python-versions = ">=3.11,<4.0"
-content-hash = "780d7419f46366c68b37ceccc3cd0383b9f9f50abafc5b3a8e99af82ba245a49"
+content-hash = "e32544cb28a8ecdf2ff8a5caee528228017669196c638774f2e1d60eef4c3447"
