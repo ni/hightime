@@ -207,9 +207,7 @@ class timedelta(std_datetime.timedelta):  # noqa: N801 - class name should use C
         r = f"{self.__class__.__module__}.{self.__class__.__qualname__}"
         r += "("
         r += ", ".join(
-            f"{name}={getattr(self, name)}"
-            for name in _FIELD_NAMES
-            if getattr(self, name) != 0
+            f"{name}={getattr(self, name)}" for name in _FIELD_NAMES if getattr(self, name) != 0
         )
         r += ")"
         return r

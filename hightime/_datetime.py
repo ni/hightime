@@ -478,9 +478,7 @@ class datetime(std_datetime.datetime):  # noqa: N801 - class name should use Cap
                 return -1
             return diff and 1 or 0
         elif isinstance(other, std_datetime.date):
-            raise TypeError(
-                f"can't compare '{type(self).__name__}' to '{type(other).__name__}'"
-            )
+            raise TypeError(f"can't compare '{type(self).__name__}' to '{type(other).__name__}'")
         else:
             return NotImplemented
 
