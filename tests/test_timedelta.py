@@ -181,7 +181,7 @@ def test_timedelta_precision_total_seconds(td: hightime.timedelta, expected: flo
     ],
 )
 def test_timedelta_repr(td: hightime.timedelta, middle_part: str) -> None:
-    assert repr(td) == "hightime.timedelta({})".format(middle_part)
+    assert repr(td) == f"hightime.timedelta({middle_part})"
     assert td == eval(repr(td))
 
 
