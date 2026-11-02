@@ -41,8 +41,13 @@ class IntLike(object):
         return self.value
 
 
-def tzinfo(*, hours: int) -> std_datetime.timezone:
-    return std_datetime.timezone(std_datetime.timedelta(hours=hours))
+def tzinfo(
+    *, hours: int = 0, minutes: int = 0, seconds: int = 0, microseconds: int = 0
+) -> std_datetime.timezone:
+    offset = std_datetime.timedelta(
+        hours=hours, minutes=minutes, seconds=seconds, microseconds=microseconds
+    )
+    return std_datetime.timezone(offset)
 
 
 def test_datetime_isinstance() -> None:
@@ -172,6 +177,48 @@ def test_datetime_repr(dt: hightime.datetime, middle_part: str) -> None:
             datetime(1, 1, 1, ys=40, tzinfo=tzinfo(hours=-1)),
             "0001-01-01T00:00:00.000000000000000000000040",
             "-01:00",
+        ),
+        (
+            datetime(1, 1, 1, ys=40, tzinfo=tzinfo(hours=5, minutes=30)),
+            "0001-01-01T00:00:00.000000000000000000000040",
+            "+05:30",
+        ),
+        (
+            datetime(1, 1, 1, ys=40, tzinfo=tzinfo(hours=-5, minutes=-30)),
+            "0001-01-01T00:00:00.000000000000000000000040",
+            "-05:30",
+        ),
+        (
+            datetime(1, 1, 1, ys=40, tzinfo=tzinfo(hours=5, minutes=30, seconds=30)),
+            "0001-01-01T00:00:00.000000000000000000000040",
+            "+05:30:30",
+        ),
+        (
+            datetime(1, 1, 1, ys=40, tzinfo=tzinfo(hours=-5, minutes=-30, seconds=-30)),
+            "0001-01-01T00:00:00.000000000000000000000040",
+            "-05:30:30",
+        ),
+        (
+            datetime(
+                1,
+                1,
+                1,
+                ys=40,
+                tzinfo=tzinfo(hours=5, minutes=30, seconds=30, microseconds=1),
+            ),
+            "0001-01-01T00:00:00.000000000000000000000040",
+            "+05:30:30.000001",
+        ),
+        (
+            datetime(
+                1,
+                1,
+                1,
+                ys=40,
+                tzinfo=tzinfo(hours=-5, minutes=-30, seconds=-30, microseconds=-1),
+            ),
+            "0001-01-01T00:00:00.000000000000000000000040",
+            "-05:30:30.000001",
         ),
         (
             datetime(1, 1, 1, ys=40, fold=1),

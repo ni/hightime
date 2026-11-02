@@ -200,9 +200,9 @@ class datetime(std_datetime.datetime):  # noqa: N801 - class name should use Cap
 
         fmt = specs[timespec]
         iso_str = super().isoformat(sep)
-        # Split off the UTC offset suffix (e.g. "+05:30", "-01:00", "+05:30:30").
+        # Split off the UTC offset suffix (e.g. "+05:30", "-01:00", "+05:30:30.000001").
         # A simple split on "+" would silently drop negative-offset timezones.
-        tz_match = re.search(r"[+-]\d{2}:\d{2}(?::\d{2})?$", iso_str)
+        tz_match = re.search(r"[+-]\d{2}:\d{2}(?::\d{2}(?:\.\d{6})?)?$", iso_str)
         if tz_match:
             tz_suffix = iso_str[tz_match.start() :]
             iso_str = iso_str[: tz_match.start()]
