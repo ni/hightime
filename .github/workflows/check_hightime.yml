@@ -20,32 +20,7 @@ jobs:
         id: setup-python
       - name: Set up Poetry
         uses: ni/python-actions/setup-poetry@36d77b6a215e106c33e30638943d5bc5233bef2f # v0.10.0
-      - name: Check for lock changes
-        run: poetry check --lock
-      - name: Cache virtualenv
-        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
-        with:
-          path: .venv
-          key: hightime-${{ runner.os }}-py${{ steps.setup-python.outputs.python-version }}-${{ hashFiles('poetry.lock') }}
-      - name: Install hightime
-        run: poetry install -v
-      - name: Lint
-        run: poetry run ni-python-styleguide lint
-      - name: Mypy static analysis (Linux)
-        run:  poetry run mypy
-      - name: Mypy static analysis (Windows)
-        run:  poetry run mypy --platform win32
+      - name: Analyze Python project
+        uses: ni/python-actions/analyze-project@36d77b6a215e106c33e30638943d5bc5233bef2f # v0.10.0
       - name: Bandit security checks
         run:  poetry run bandit -c pyproject.toml -r hightime
-      # - name: Add virtualenv to the path for pyright-action
-      #   run: echo "$(poetry env info --path)/bin" >> $GITHUB_PATH
-      # - name: Pyright static analysis (Linux)
-      #   uses: jakebailey/pyright-action@b5d50e5cde6547546a5c4ac92e416a8c2c1a1dfe # v2.3.2
-      #   with:
-      #     python-platform: Linux
-      #     version: PATH
-      # - name: Pyright static analysis (Windows)
-      #   uses: jakebailey/pyright-action@b5d50e5cde6547546a5c4ac92e416a8c2c1a1dfe # v2.3.2
-      #   with:
-      #     python-platform: Windows
-      #     version: PATH
