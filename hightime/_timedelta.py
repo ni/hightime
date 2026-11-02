@@ -204,12 +204,10 @@ class timedelta(std_datetime.timedelta):  # noqa: N801 - class name should use C
     def __repr__(self):
         """Return repr(self)."""
         # Follow newer repr: https://github.com/python/cpython/pull/3687
-        r = "{}.{}".format(self.__class__.__module__, self.__class__.__qualname__)
+        r = f"{self.__class__.__module__}.{self.__class__.__qualname__}"
         r += "("
         r += ", ".join(
-            "{}={}".format(name, getattr(self, name))
-            for name in _FIELD_NAMES
-            if getattr(self, name) != 0
+            f"{name}={getattr(self, name)}" for name in _FIELD_NAMES if getattr(self, name) != 0
         )
         r += ")"
         return r
@@ -221,10 +219,10 @@ class timedelta(std_datetime.timedelta):  # noqa: N801 - class name should use C
             if not self.microseconds:
                 s += "." + "0" * 6
 
-            s += "{:09d}".format(self.femtoseconds)
+            s += f"{self.femtoseconds:09d}"
 
             if self.yoctoseconds:
-                s += "{:09d}".format(self.yoctoseconds)
+                s += f"{self.yoctoseconds:09d}"
 
         return s
 
