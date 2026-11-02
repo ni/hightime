@@ -56,7 +56,8 @@ toml = ">=0.10.2"
 bandit = { version = ">=1.7", extras = ["toml"] }
 ni-python-styleguide = ">=0.4.1"
 mypy = ">=1.0"
-pyright = { version = ">=1.1.400", extras = ["nodejs"] }
+# https://github.com/ni/hightime/issues/64 - pyright reports errors in hightime
+# pyright = { version = ">=1.1.400", extras = ["nodejs"] }
 
 [tool.poetry.group.test.dependencies]
 pytest = ">=7.2"
