@@ -1802,7 +1802,7 @@ description = "Python documentation generator"
 optional = false
 python-versions = ">=3.12"
 groups = ["docs"]
-markers = "python_version < \"3.15\" and python_version >= \"3.12\""
+markers = "python_version >= \"3.12\" and python_version < \"3.15\""
 files = [
     {file = "sphinx-9.1.1-py3-none-any.whl", hash = "sha256:f8b60013ce25017be41a509e5c2d265bc1918410061315c36b809c7f335646c0"},
     {file = "sphinx-9.1.1.tar.gz", hash = "sha256:48b627f02908f22c601b3ba9c7b17265b4f315dd05c8bc64cd4da41183f44fbc"},
@@ -2058,14 +2058,14 @@ files = [
 
 [[package]]
 name = "tox"
-version = "4.67.5"
+version = "4.67.13"
 description = "tox is a generic virtualenv management and test command line tool"
 optional = false
 python-versions = ">=3.11"
 groups = ["test"]
 files = [
-    {file = "tox-4.67.5-py3-none-any.whl", hash = "sha256:2ce2844114ff4c50024d9bbdea19a2f3cabe66736d8cf6a3398ad9a3b3ce60fd"},
-    {file = "tox-4.67.5.tar.gz", hash = "sha256:f1872e30d89c8d18cbdf3b93c4c7dc04d4f3928c0af413e9ae5b71ba3f1c438d"},
+    {file = "tox-4.67.13-py3-none-any.whl", hash = "sha256:4d6fa08dbe5e841f2abfee1dd4f5cdf31af30d68a3d78b85a7bf57eced5f3c6c"},
+    {file = "tox-4.67.13.tar.gz", hash = "sha256:9f70b44ca2e31d91d8fe2e2917f505554950adc3961c0ee70bb42db16d903f62"},
 ]
 
 [package.dependencies]
